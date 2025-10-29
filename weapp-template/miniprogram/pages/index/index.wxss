@@ -1,0 +1,14 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 100rpx;
+}
+.title {
+  font-size: 36rpx;
+  margin-bottom: 50rpx;
+}
+.output {
+  margin-top: 40rpx;
+  color: #666;
+}

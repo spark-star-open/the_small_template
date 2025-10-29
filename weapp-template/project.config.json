@@ -1,0 +1,12 @@
+{
+  "miniprogramRoot": "miniprogram/",
+  "cloudfunctionRoot": "cloudfunctions/",
+  "description": "微信云开发最小模板",
+  "appid": "tour-app-id",
+  "projectname": "weapp-template",
+  "setting": {
+    "cloudfunctionRoot": "cloudfunctions/",
+    "miniprogramRoot": "miniprogram/",
+    "urlCheck": false
+  }
+}

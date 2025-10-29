@@ -1,0 +1,5 @@
+<view class="container">
+  <text class="title">微信云开发最小模板</text>
+  <button bindtap="callCloud">测试云函数</button>
+  <text class="output">{{output}}</text>
+</view>
