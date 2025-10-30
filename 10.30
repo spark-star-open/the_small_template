@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>防火门项目勘察现场记录表 - 完整版</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px 0 100px;
+    }
+
+    .phone-frame {
+      max-width: 375px;
+      margin: 0 auto;
+      background: #f5f5f5;
+      box-shadow: 0 0 30px rgba(0,0,0,0.1);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .header {
+      background-color: #fff;
+      height: 120px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .cover-icon {
+      width: 40px;
+      height: 40px;
+      background: #f0f0f0;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 24px;
+      color: #999;
+      margin-bottom: 8px;
+    }
+
+    .cover-text {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .title-section {
+      background-color: #fff;
+      padding: 24px 16px;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .main-title {
+      font-size: 20px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 12px;
+    }
+
+    .subtitle {
+      font-size: 14px;
+      color: #999;
+    }
+
+    .button-group {
+      background-color: #fff;
+      display: flex;
+      padding: 16px;
+      gap: 10px;
+      border-bottom: 1px solid #e5e5e5;
+      margin-bottom: 10px;
+    }
+
+    .btn-item {
+      flex: 1;
+      background-color: #f8f8f8;
+      border-radius: 6px;
+      padding: 12px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .btn-icon {
+      font-size: 18px;
+      color: #666;
+    }
+
+    .btn-text {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .form-section {
+      background-color: #fff;
+      padding: 20px 16px;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    .form-item {
+      margin-bottom: 24px;
+    }
+
+    .form-label {
+      display: flex;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .required {
+      color: #ff4d4f;
+      font-size: 16px;
+      margin-right: 4px;
+    }
+
+    .label-num {
+      font-size: 14px;
+      color: #333;
+      margin-right: 6px;
+    }
+
+    .label-text {
+      font-size: 14px;
+      color: #333;
+    }
+
+    .measure-hint {
+      font-size: 12px;
+      color: #999;
+      margin-bottom: 10px;
+    }
+
+    .form-input {
+      width: 100%;
+      height: 44px;
+      background-color: #fafafa;
+      border-radius: 6px;
+      padding: 0 16px;
+      font-size: 14px;
+      color: #333;
+      border: none;
+      outline: none;
+    }
+
+    .form-input::placeholder {
+      color: #ccc;
+    }
+
+    .form-textarea {
+      width: 100%;
+      min-height: 100px;
+      background-color: #fafafa;
+      border-radius: 6px;
+      padding: 12px 16px;
+      font-size: 14px;
+      color: #333;
+      border: none;
+      outline: none;
+      resize: vertical;
+      font-family: inherit;
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .radio-item {
+      display: flex;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .radio-item input[type="radio"] {
+      margin-right: 10px;
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+
+    .location-input, .picker-input {
+      display: flex;
+      align-items: center;
+      height: 44px;
+      background-color: #fafafa;
+      border-radius: 6px;
+      padding: 0 16px;
+      cursor: pointer;
+    }
+
+    .location-icon, .picker-icon {
+      width: 18px;
+      height: 18px;
+      margin-right: 10px;
+    }
+
+    .location-text, .picker-text {
+      flex: 1;
+      font-size: 14px;
+      color: #ccc;
+    }
+
+    .location-text.selected, .picker-text.selected {
+      color: #333;
+    }
+
+    .arrow-icon {
+      width: 12px;
+      height: 12px;
+      opacity: 0.3;
+    }
+
+    .table-container {
+      width: 100%;
+      border: 1px solid #e5e5e5;
+      border-radius: 6px;
+      overflow: hidden;
+    }
+
+    .table-row {
+      display: flex;
+      border-bottom: 1px solid #e5e5e5;
+    }
+
+    .table-row:last-child {
+      border-bottom: none;
+    }
+
+    .table-header {
+      background-color: #fafafa;
+    }
+
+    .table-header .table-cell {
+      font-weight: bold;
+      color: #333;
+      padding: 12px 6px;
+      font-size: 12px;
+    }
+
+    .table-cell {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 8px 4px;
+      border-right: 1px solid #e5e5e5;
+      min-height: 44px;
+    }
+
+    .table-cell:last-child {
+      border-right: none;
+      flex: 0.5;
+    }
+
+    .table-input {
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      font-size: 13px;
+      color: #333;
+      border: none;
+      outline: none;
+      background: transparent;
+    }
+
+    .photo-upload {
+      width: 100%;
+    }
+
+    .photo-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .photo-item {
+      position: relative;
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: #f0f0f0;
+    }
+
+    .photo-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-delete {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 24px;
+      height: 24px;
+      background-color: rgba(0, 0, 0, 0.6);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: 18px;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    .photo-add {
+      width: 100px;
+      height: 100px;
+      background-color: #fafafa;
+      border: 2px dashed #ddd;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .photo-add:hover {
+      background-color: #f5f5f5;
+    }
+
+    .photo-add-large {
+      width: 100%;
+      height: 120px;
+      background-color: #fafafa;
+      border: 2px dashed #ddd;
+      border-radius: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .add-icon {
+      font-size: 32px;
+      color: #ccc;
+      line-height: 1;
+    }
+
+    .add-text {
+      font-size: 13px;
+      color: #999;
+      text-align: center;
+    }
+
+    .photo-tip {
+      font-size: 12px;
+      color: #999;
+    }
+
+    .submit-section {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      max-width: 375px;
+      width: 100%;
+      background-color: #fff;
+      padding: 12px 16px;
+      box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
+      z-index: 100;
+    }
+
+    .submit-btn {
+      width: 100%;
+      height: 48px;
+      background-color: #1890ff;
+      color: #fff;
+      font-size: 16px;
+      border-radius: 6px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .submit-btn:hover {
+      background-color: #40a9ff;
+    }
+
+    .demo-photo {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="phone-frame">
+    <!-- 顶部封面 -->
+    <div class="header">
+      <div class="cover-icon">🖼️</div>
+      <div class="cover-text">添加封面</div>
+    </div>
+
+    <!-- 标题 -->
+    <div class="title-section">
+      <div class="main-title">防火门项目勘察现场记录表</div>
+      <div class="subtitle">添加提示：文字、图片或链接</div>
+    </div>
+
+    <!-- 操作按钮组 -->
+    <div class="button-group">
+      <div class="btn-item">
+        <span class="btn-icon">+</span>
+        <span class="btn-text">定时和重复</span>
+      </div>
+      <div class="btn-item">
+        <span class="btn-icon">+</span>
+        <span class="btn-text">提写名单</span>
+      </div>
+      <div class="btn-item">
+        <span class="btn-icon">+</span>
+        <span class="btn-text">结束页</span>
+      </div>
+    </div>
+
+    <!-- 基本信息 -->
+    <div class="form-section">
+      <div class="section-title">基本信息</div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">01</span>
+          <span class="label-text">项目技术人员</span>
+        </div>
+        <input class="form-input" type="text" placeholder="待填写人输入">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">02</span>
+          <span class="label-text">用户单位负责人</span>
+        </div>
+        <input class="form-input" type="text" placeholder="待填写人输入">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">03</span>
+          <span class="label-text">项目代码</span>
+        </div>
+        <input class="form-input" type="text" placeholder="待填写人输入">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">04</span>
+          <span class="label-text">商家店名</span>
+        </div>
+        <input class="form-input" type="text" placeholder="待填写人输入">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">05</span>
+          <span class="label-text">地点</span>
+        </div>
+        <div class="location-input" onclick="selectLocation()">
+          <span class="location-icon">📍</span>
+          <span class="location-text" id="locationText">省/市/区</span>
+          <span class="arrow-icon">▶</span>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">06</span>
+          <span class="label-text">店家正面照片</span>
+        </div>
+        <div class="photo-upload">
+          <div class="photo-list" id="shopPhotoList">
+            <div class="photo-add" onclick="addPhoto('shop')">
+              <span class="add-icon">+</span>
+              <span class="add-text">待填写人<br>添加图片</span>
+            </div>
+          </div>
+          <div class="photo-tip">图片要求：最多6张</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 防火门 -->
+    <div class="form-section">
+      <div class="section-title">防火门</div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">07</span>
+          <span class="label-text">原防火门是否需要拆除</span>
+        </div>
+        <div class="radio-group">
+          <label class="radio-item">
+            <input type="radio" name="needRemove" value="yes">
+            <span>是</span>
+          </label>
+          <label class="radio-item">
+            <input type="radio" name="needRemove" value="no">
+            <span>否</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="label-num">08</span>
+          <span class="label-text">防火门1</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <div class="table-container">
+          <div class="table-row table-header">
+            <div class="table-cell">防火门高度（mm）</div>
+            <div class="table-cell">防火门宽度（mm）</div>
+            <div class="table-cell">开</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">
+              <input class="table-input" type="number" placeholder="请输入">
+            </div>
+            <div class="table-cell">
+              <input class="table-input" type="number" placeholder="请输入">
+            </div>
+            <div class="table-cell">
+              <input class="table-input" placeholder="请">
+            </div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell">
+              <input class="table-input" type="number" placeholder="请输入">
+            </div>
+            <div class="table-cell">
+              <input class="table-input" type="number" placeholder="请输入">
+            </div>
+            <div class="table-cell">
+              <input class="table-input" placeholder="请">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="label-num">09</span>
+          <span class="label-text">防火门2</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <div class="table-container">
+          <div class="table-row table-header">
+            <div class="table-cell">防火门高度（mm）</div>
+            <div class="table-cell">防火门宽度（mm）</div>
+            <div class="table-cell">开</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="label-num">10</span>
+          <span class="label-text">防火门3</span>
+        </div>
+        <div class="table-container">
+          <div class="table-row table-header">
+            <div class="table-cell">防火门高度（mm）</div>
+            <div class="table-cell">防火门宽度（mm）</div>
+            <div class="table-cell">开</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 防火窗 -->
+    <div class="form-section">
+      <div class="section-title">防火窗</div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="label-num">11</span>
+          <span class="label-text">防火窗1</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <div class="table-container">
+          <div class="table-row table-header">
+            <div class="table-cell">防火窗高度（mm）</div>
+            <div class="table-cell">防火窗宽度（mm）</div>
+            <div class="table-cell">开</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="label-num">12</span>
+          <span class="label-text">防火窗2</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <div class="table-container">
+          <div class="table-row table-header">
+            <div class="table-cell">防火窗高度（mm）</div>
+            <div class="table-cell">防火窗宽度（mm）</div>
+            <div class="table-cell">开</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="label-num">13</span>
+          <span class="label-text">防火窗3</span>
+        </div>
+        <div class="table-container">
+          <div class="table-row table-header">
+            <div class="table-cell">防火窗高度（mm）</div>
+            <div class="table-cell">防火窗宽度（mm）</div>
+            <div class="table-cell">开</div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+          <div class="table-row">
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" type="number" placeholder="请输入"></div>
+            <div class="table-cell"><input class="table-input" placeholder="请"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 防火吊顶 -->
+    <div class="form-section">
+      <div class="section-title">防火吊顶</div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">14</span>
+          <span class="label-text">吊顶长度（m）</span>
+        </div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">15</span>
+          <span class="label-text">吊顶宽度（m）</span>
+        </div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+    </div>
+
+    <!-- 防火隔断 -->
+    <div class="form-section">
+      <div class="section-title">防火隔断</div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">16</span>
+          <span class="label-text">防火玻璃隔墙高度（mm）</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">17</span>
+          <span class="label-text">防火玻璃隔墙宽度（mm）</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">18</span>
+          <span class="label-text">轻钢龙骨隔墙高度（mm）</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">19</span>
+          <span class="label-text">轻钢龙骨隔墙宽度（mm）</span>
+        </div>
+        <div class="measure-hint">没有则填0</div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">20</span>
+          <span class="label-text">砌块隔墙高度（mm）</span>
+        </div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">21</span>
+          <span class="label-text">砌块隔墙宽度（mm）</span>
+        </div>
+        <input class="form-input" type="number" placeholder="请输入数字">
+      </div>
+    </div>
+
+    <!-- 其他 -->
+    <div class="form-section">
+      <div class="section-title">其他</div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">22</span>
+          <span class="label-text">现场勘察记录表拍照</span>
+        </div>
+        <div class="photo-upload">
+          <div class="photo-list" id="surveyPhotoList">
+            <div class="photo-add-large" onclick="addPhoto('survey')">
+              <span class="add-icon">+</span>
+              <span class="add-text">添加图片</span>
+            </div>
+          </div>
+          <div class="photo-tip">图片要求：最多6张</div>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">23</span>
+          <span class="label-text">店家意向施工时间</span>
+        </div>
+        <div class="picker-input" onclick="selectTime()">
+          <span class="picker-icon">🕐</span>
+          <span class="picker-text" id="timeText">年/月/日/时/分</span>
+          <span class="arrow-icon">▼</span>
+        </div>
+      </div>
+
+      <div class="form-item">
+        <div class="form-label">
+          <span class="required">*</span>
+          <span class="label-num">24</span>
+          <span class="label-text">备注</span>
+        </div>
+        <textarea class="form-textarea" placeholder="请输入"></textarea>
+      </div>
+    </div>
+
+    <!-- 提交按钮 -->
+    <div class="submit-section">
+      <button class="submit-btn" onclick="submitForm()">提交</button>
+    </div>
+  </div>
+
+  <script>
+    let shopPhotos = [];
+    let surveyPhotos = [];
+
+    function selectLocation() {
+      const locationText = document.getElementById('locationText');
+      locationText.textContent = '广东省/深圳市/南山区';
+      locationText.classList.add('selected');
+      alert('地点已选择：广东省/深圳市/南山区');
+    }
+
+    function
