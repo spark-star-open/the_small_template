@@ -1,0 +1,17 @@
+<view class="result">
+<icon type="success" size="88"></icon>
+<view class="title">提交成功</view>
+<view class="desc">我们已收到你的勘察记录</view>
+
+
+<view class="meta" wx:if="{{shopName || timeText}}">
+<view class="meta-item" wx:if="{{shopName}}"><text class="label">门店：</text>{{shopName}}</view>
+<view class="meta-item" wx:if="{{timeText}}"><text class="label">时间：</text>{{timeText}}</view>
+</view>
+
+
+<view class="actions">
+<button class="btn primary" bindtap="goHome">返回首页</button>
+<button class="btn plain" bindtap="goNew">继续填写</button>
+</view>
+</view>

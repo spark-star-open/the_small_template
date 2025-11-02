@@ -1,15 +1,15 @@
 {
   "pages": [
-  "pages/role-select/index",
-  "pages/SurveyForm/index",
-  "pages/SubmitSuccess/index",
-  "pages/AdminLogin/index",
-  "pages/AdminDashboard/index",
-  "pages/RecordDetail/index"
+    "pages/role-select/index",
+    "pages/Surveyform/index",
+    "pages/SubmitSuccess/index",
+    "pages/AdminLogin/index",
+    "pages/AdminDashboard/index",
+    "pages/RecordDetail/index"
   ],
   "window": {
-  "navigationBarTitleText": "防火门项目勘察",
-  "navigationBarBackgroundColor": "#ffffff",
-  "backgroundTextStyle": "dark"
+    "navigationBarTitleText": "防火门项目勘察",
+    "navigationBarBackgroundColor": "#ffffff",
+    "backgroundTextStyle": "dark"
   }
-  }
+}
