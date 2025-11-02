@@ -1,0 +1,31 @@
+<view class="wrap">
+<view class="filters">
+<picker mode="date" value="{{filters.date}}" bindchange="onDate">
+<view class="picker">日期：{{filters.date || '全部'}}</view>
+</picker>
+<input class="search" value="{{filters.keyword}}" bindinput="onKeyword" placeholder="门店/项目编号" />
+</view>
+
+
+<block wx:if="{{list.length}}">
+<block wx:for="{{list}}" wx:key="id">
+<view class="item" bindtap="goDetail" data-id="{{item.id}}">
+<view class="row">
+<text class="title">{{item.shopName}}</text>
+<text class="badge {{item.status}}">{{item.statusText}}</text>
+</view>
+<view class="sub">{{item.projectCode}} · {{item.timeText}}</view>
+</view>
+</block>
+<view class="loadmore" wx:if="{{loading}}">加载中...</view>
+<view class="loadmore" wx:if="{{!hasMore && !loading}}">没有更多了</view>
+</block>
+<view class="empty" wx:else>暂无数据</view>
+
+
+<view class="toolbar">
+<button size="mini" bindtap="refresh">刷新</button>
+<button size="mini" bindtap="exportExcel">导出Excel</button>
+<button size="mini" bindtap="goAnalytics">统计概览</button>
+</view>
+</view>

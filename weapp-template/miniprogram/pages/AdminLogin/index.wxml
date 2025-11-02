@@ -1,0 +1,6 @@
+<view class="wrap">
+<view class="title">请输入管理者密码</view>
+<view class="field">
+<input password="{{!show}}" value="{{pwd}}" bindinput="onInput" placeholder="请输入密码" />
+<text class="toggle" bindtap="toggleShow">{{ show ? '隐藏' : '显示' }}</text>
+</view>
