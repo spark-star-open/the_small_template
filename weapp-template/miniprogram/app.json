@@ -1,7 +1,7 @@
 {
   "pages": [
     "pages/role-select/index",
-    "pages/Surveyform/index",
+    "pages/SurveyForm/index",
     "pages/SubmitSuccess/index",
     "pages/AdminLogin/index",
     "pages/AdminDashboard/index",
