@@ -1,12 +1,15 @@
 {
   "pages": [
-    "pages/index/index"
+  "pages/role-select/index",
+  "pages/SurveyForm/index",
+  "pages/SubmitSuccess/index",
+  "pages/AdminLogin/index",
+  "pages/AdminDashboard/index",
+  "pages/RecordDetail/index"
   ],
   "window": {
-    "backgroundTextStyle": "light",
-    "navigationBarBackgroundColor": "#ffffff",
-    "navigationBarTitleText": "云开发模板",
-    "navigationBarTextStyle": "black"
-  },
-  "cloud": true
-}
+  "navigationBarTitleText": "防火门项目勘察",
+  "navigationBarBackgroundColor": "#ffffff",
+  "backgroundTextStyle": "dark"
+  }
+  }

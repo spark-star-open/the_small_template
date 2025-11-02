@@ -1,0 +1,7 @@
+page { background: #f5f6f8; }
+.wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40rpx; box-sizing: border-box; }
+.logo { font-size: 36rpx; font-weight: 600; color: #111; margin-bottom: 40rpx; }
+.card { width: 100%; max-width: 640rpx; display: grid; gap: 24rpx; }
+.btn { height: 96rpx; border-radius: 999rpx; font-size: 32rpx; }
+.primary { background: #07c160; color: #fff; border: none; }
+.plain { background: #fff; color: #07c160; border: 2rpx solid #07c160; }
