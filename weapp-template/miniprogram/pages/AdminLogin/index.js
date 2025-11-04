@@ -21,6 +21,11 @@ Page({
     });
   },
 
+  // 返回主页面（角色选择）
+  goHome() {
+    wx.reLaunch({ url: '/pages/role-select/index' });
+  },
+
   onLogin() {
     if (this.data.loading) return;
 
