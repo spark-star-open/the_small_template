@@ -1,5 +1,7 @@
 // pages/survey/survey.js
-Page({
+// Export a plain object for testing and guard Page for Node compatibility
+
+const pageDef = {
   /**
    * 页面的初始数据
    */
@@ -13,7 +15,7 @@ Page({
       location: '',
       locationDetail: {},
       shopPhotos: [],
-      
+
       // 防火门
       needRemove: '',
       door1Height: '',
@@ -25,7 +27,7 @@ Page({
       door3Height: '',
       door3Width: '',
       door3Open: '',
-      
+
       // 防火窗
       window1Height: '',
       window1Width: '',
@@ -36,11 +38,11 @@ Page({
       window3Height: '',
       window3Width: '',
       window3Open: '',
-      
+
       // 防火吊顶
       ceilingLength: '',
       ceilingWidth: '',
-      
+
       // 防火隔断
       glassWallHeight: '',
       glassWallWidth: '',
@@ -48,17 +50,17 @@ Page({
       steelWallWidth: '',
       blockWallHeight: '',
       blockWallWidth: '',
-      
+
       // 其他
       surveyPhotos: [],
       constructionTime: '',
       dateTimeIndex: [0, 0, 0, 0, 0],
       remark: ''
     },
-    
+
     // 时间选择器数据
     dateTimeArray: [],
-    
+
     // 提交状态
     submitting: false,
   },
@@ -66,7 +68,7 @@ Page({
   /**
    * 生命周期函数--监听页面加载
    */
-  onLoad(options) {
+  onLoad() {
     this.initDateTimeArray();
   },
 
@@ -79,28 +81,28 @@ Page({
     const days = [];
     const hours = [];
     const minutes = [];
-    
+
     const currentYear = new Date().getFullYear();
     for (let i = 0; i < 5; i++) {
       years.push((currentYear + i) + '年');
     }
-    
+
     for (let i = 1; i <= 12; i++) {
       months.push(i + '月');
     }
-    
+
     for (let i = 1; i <= 31; i++) {
       days.push(i + '日');
     }
-    
+
     for (let i = 0; i <= 23; i++) {
       hours.push(i + '时');
     }
-    
+
     for (let i = 0; i <= 59; i++) {
       minutes.push(i + '分');
     }
-    
+
     this.setData({
       dateTimeArray: [years, months, days, hours, minutes]
     });
@@ -135,7 +137,7 @@ Page({
     const value = e.detail.value;
     const dateTimeArray = this.data.dateTimeArray;
     const timeStr = `${dateTimeArray[0][value[0]]}/${dateTimeArray[1][value[1]]}/${dateTimeArray[2][value[2]]}/${dateTimeArray[3][value[3]]}/${dateTimeArray[4][value[4]]}`;
-    
+
     this.setData({
       'formData.dateTimeIndex': value,
       'formData.constructionTime': timeStr
@@ -161,8 +163,8 @@ Page({
         });
       },
       fail(err) {
-        console.log('选择位置失败：', err);
-        if (err.errMsg.indexOf('auth deny') !== -1) {
+        console.log('选择位置失败', err);
+        if (err.errMsg && err.errMsg.indexOf('auth deny') !== -1) {
           wx.showModal({
             title: '提示',
             content: '需要授权位置信息才能选择地点',
@@ -185,7 +187,7 @@ Page({
     const that = this;
     const currentPhotos = this.data.formData[field] || [];
     const maxCount = 6 - currentPhotos.length;
-    
+
     wx.chooseMedia({
       count: maxCount,
       mediaType: ['image'],
@@ -199,7 +201,7 @@ Page({
         });
       },
       fail(err) {
-        console.log('选择图片失败：', err);
+        console.log('选择图片失败', err);
       }
     });
   },
@@ -227,11 +229,11 @@ Page({
   },
 
   /**
-   * 提写名单
+   * 填写名单
    */
   onWriteList() {
     wx.showToast({
-      title: '提写名单功能',
+      title: '填写名单功能',
       icon: 'none'
     });
   },
@@ -250,13 +252,13 @@ Page({
    * 表单验证
    */
   validateForm() {
-    const { 
+    const {
       technician, unitLeader, projectCode, shopName, location, shopPhotos,
       needRemove, ceilingLength, ceilingWidth, glassWallHeight, glassWallWidth,
       steelWallHeight, steelWallWidth, blockWallHeight, blockWallWidth,
       surveyPhotos, constructionTime, remark
     } = this.data.formData;
-    
+
     // 基本信息验证
     if (!technician) {
       wx.showToast({ title: '请输入项目技术人员', icon: 'none' });
@@ -267,28 +269,28 @@ Page({
       return false;
     }
     if (!projectCode) {
-      wx.showToast({ title: '请输入项目代码', icon: 'none' });
+      wx.showToast({ title: '请输入项目编号', icon: 'none' });
       return false;
     }
     if (!shopName) {
       wx.showToast({ title: '请输入商家店名', icon: 'none' });
       return false;
     }
-    if (!location) {
-      wx.showToast({ title: '请选择地点', icon: 'none' });
-      return false;
-    }
+    // if (!location) {
+    //   wx.showToast({ title: '请选择地点', icon: 'none' });
+    //   return false;
+    // }
     if (shopPhotos.length === 0) {
       wx.showToast({ title: '请上传店家正面照片', icon: 'none' });
       return false;
     }
-    
+
     // 防火门验证
     if (!needRemove) {
       wx.showToast({ title: '请选择原防火门是否需要拆除', icon: 'none' });
       return false;
     }
-    
+
     // 防火吊顶验证
     if (!ceilingLength) {
       wx.showToast({ title: '请输入吊顶长度', icon: 'none' });
@@ -298,7 +300,7 @@ Page({
       wx.showToast({ title: '请输入吊顶宽度', icon: 'none' });
       return false;
     }
-    
+
     // 防火隔断验证
     if (!glassWallHeight) {
       wx.showToast({ title: '请输入防火玻璃隔墙高度', icon: 'none' });
@@ -324,7 +326,7 @@ Page({
       wx.showToast({ title: '请输入砌块隔墙宽度', icon: 'none' });
       return false;
     }
-    
+
     // 其他验证
     if (surveyPhotos.length === 0) {
       wx.showToast({ title: '请上传现场勘察记录表拍照', icon: 'none' });
@@ -338,7 +340,7 @@ Page({
       wx.showToast({ title: '请输入备注', icon: 'none' });
       return false;
     }
-    
+
     return true;
   },
 
@@ -347,13 +349,13 @@ Page({
    */
   onSubmit() {
     if (typeof this.validateForm === 'function' && !this.validateForm()) return;
-    
+
     if (this.data.submitting) return;
-    
+
     this.setData({ submitting: true });
-    
+
     wx.showLoading({ title: '提交中...' });
-    
+
     // TODO: 与后端对接后用 wx.request 提交；当前先模拟成功
     setTimeout(() => {
       wx.hideLoading();
@@ -364,18 +366,18 @@ Page({
         url: `/pages/SubmitSuccess/index?ts=${ts}&shopName=${encodeURIComponent(shopName)}`
       });
     }, 1000);
-    
-    /* 
+
+    /*
     ========================================
     实际提交代码示例（供后端对接使用）：
     ========================================
-    
+
     // 1. 上传所有图片
     const allPhotos = [
       ...this.data.formData.shopPhotos,
       ...this.data.formData.surveyPhotos
     ];
-    
+
     const uploadPromises = allPhotos.map(photo => {
       return new Promise((resolve, reject) => {
         wx.uploadFile({
@@ -390,7 +392,7 @@ Page({
         });
       });
     });
-    
+
     Promise.all(uploadPromises).then(photoUrls => {
       const shopPhotoCount = this.data.formData.shopPhotos.length;
       const submitData = {
@@ -398,7 +400,7 @@ Page({
         shopPhotos: photoUrls.slice(0, shopPhotoCount),
         surveyPhotos: photoUrls.slice(shopPhotoCount)
       };
-      
+
       // 2. 提交表单
       wx.request({
         url: 'https://your-api.com/survey/submit',  // 👈 替换为你的表单提交接口
@@ -424,7 +426,7 @@ Page({
           });
         }
       });
-    }).catch(err => {
+    }).catch(() => {
       wx.hideLoading();
       wx.showToast({
         title: '图片上传失败',
@@ -433,4 +435,15 @@ Page({
     });
     */
   }
-});
+};
+
+// Register page in WeChat environment
+if (typeof Page === 'function') {
+  Page(pageDef);
+}
+
+// Export for Node/testing usage
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = pageDef;
+}
+

@@ -1,18 +1,17 @@
-const adminSrv = require('../../../services/admin.service');
-const fmt = require('../../../utils/format');
-
+const adminSrv = require('../../services/admin.service');
+const fmt = require('../../utils/format');
 
 Page({
-data: { detail: null },
-onLoad(options) {
-const id = options.id;
-this.fetch(id);
-},
-fetch(id) {
-adminSrv.detail(id).then(d => {
-d.timeText = fmt.time(d.ts);
-d.statusText = d.status === 'done' ? 'å·²å®Œæˆ' : 'å¾…å¤„ç†';
-this.setData({ detail: d });
-});
-}
+  data: { detail: null },
+  onLoad(options) {
+    const id = options.id;
+    this.fetch(id);
+  },
+  fetch(id) {
+    adminSrv.detail(id).then(d => {
+      d.timeText = fmt.time(d.ts);
+      d.statusText = d.status === 'done' ? 'ÒÑÍê³É' : '´ı´¦Àí';
+      this.setData({ detail: d });
+    });
+  }
 });

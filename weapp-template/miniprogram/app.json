@@ -8,7 +8,7 @@
     "pages/RecordDetail/index"
   ],
   "window": {
-    "navigationBarTitleText": "防火门项目勘察",
+    "navigationBarTitleText": "防火门项目勘查",
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundTextStyle": "dark"
   }

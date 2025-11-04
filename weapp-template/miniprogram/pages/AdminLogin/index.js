@@ -1,11 +1,12 @@
-const storage = require('../../utils/storage');
+﻿// miniprogram/pages/AdminLogin/index.js
 
 Page({
   data: {
     pwd: '',
     show: false,
     toggleText: '显示',
-    loading: false
+    loading: false,
+    msg: ''
   },
 
   onInput(e) {
@@ -22,21 +23,32 @@ Page({
 
   onLogin() {
     if (this.data.loading) return;
-    if (!this.data.pwd) {
-      wx.showToast({ title: '请输入密码', icon: 'none' });
-      return;
-    }
-    this.setData({ loading: true });
 
-    // TODO: 接后端验证；此处仅演示
-    setTimeout(() => {
-      this.setData({ loading: false });
-      if (this.data.pwd === '123456') {
-        storage.set('adminToken', 'demo-token');
+    this.setData({ loading: true, msg: '' });
+
+    wx.cloud.callFunction({
+      name: 'auth',
+      data: { op: 'login' }
+    }).then(res => {
+      const { code, data, msg } = res.result || {};
+      if (code !== 0) throw new Error(msg || '登录失败');
+
+      const roles = (data && data.roles) || [];
+      if (roles.includes('admin')) {
+        // 用内置存储
+        wx.setStorageSync('adminToken', 'ok');
+        wx.showToast({ title: '管理员登录成功', icon: 'success' });
         wx.reLaunch({ url: '/pages/AdminDashboard/index' });
       } else {
-        wx.showToast({ title: '密码错误', icon: 'none' });
+        this.setData({ msg: '当前账号不是管理员，请联系管理员在后台添加权限' });
+        wx.showToast({ title: '非管理员', icon: 'none' });
       }
-    }, 500);
+    }).catch(err => {
+      console.error(err);
+      wx.showToast({ title: err.message || '网络错误', icon: 'none' });
+      this.setData({ msg: err.message || '' });
+    }).finally(() => {
+      this.setData({ loading: false });
+    });
   }
 });

@@ -1,55 +1,61 @@
-const auth = require('../../../utils/auth');
-const adminSrv = require('../../../services/admin.service');
-const fmt = require('../../../utils/format');
-
+const auth = require('../../utils/auth');
+const adminSrv = require('../../services/admin.service');
+const fmt = require('../../utils/format');
 
 Page({
-data: {
-list: [], page: 1, pageSize: 10, hasMore: true, loading: false,
-filters: { date: '', keyword: '' }
-},
-onShow() {
-if (!auth.ensureAdmin()) return; // 未登录会被重定向
-if (!this.data.list.length) { this.fetchList(true); }
-},
-onPullDownRefresh() { this.fetchList(true); },
-onReachBottom() { if (this.data.hasMore && !this.data.loading) this.fetchList(false); },
+  data: {
+    list: [],
+    page: 1,
+    pageSize: 10,
+    hasMore: true,
+    loading: false,
+    filters: { date: '', keyword: '' }
+  },
 
+  onShow() {
+    if (!auth.ensureAdmin()) return; // 未登录会被重定向
+    if (!this.data.list.length) {
+      this.fetchList(true);
+    }
+  },
 
-onDate(e) { this.setData({ 'filters.date': e.detail.value }); this.fetchList(true); },
-onKeyword(e) { this.setData({ 'filters.keyword': e.detail.value }); },
-refresh() { this.fetchList(true); },
+  onPullDownRefresh() { this.fetchList(true); },
+  onReachBottom() { if (this.data.hasMore && !this.data.loading) this.fetchList(false); },
 
+  onDate(e) {
+    this.setData({ 'filters.date': e.detail.value });
+    this.fetchList(true);
+  },
+  onKeyword(e) { this.setData({ 'filters.keyword': e.detail.value }); },
+  refresh() { this.fetchList(true); },
 
-fetchList(reset) {
-if (reset) this.setData({ page: 1, hasMore: true, list: [] });
-if (!this.data.hasMore) return;
-this.setData({ loading: true });
+  fetchList(reset) {
+    if (reset) this.setData({ page: 1, hasMore: true, list: [] });
+    if (!this.data.hasMore) return;
+    this.setData({ loading: true });
 
+    adminSrv.list({ page: this.data.page, pageSize: this.data.pageSize, ...this.data.filters })
+      .then(res => {
+        const rows = (res.rows || []).map(x => ({
+          ...x,
+          timeText: fmt.time(x.ts),
+          statusText: x.status === 'done' ? '已完成' : '待处理'
+        }));
+        const list = this.data.list.concat(rows);
+        this.setData({ list, page: this.data.page + 1, hasMore: !!res.hasMore });
+      })
+      .finally(() => {
+        this.setData({ loading: false });
+        wx.stopPullDownRefresh();
+      });
+  },
 
-adminSrv.list({ page: this.data.page, pageSize: this.data.pageSize, ...this.data.filters })
-.then(res => {
-const rows = res.rows.map(x => ({
-...x,
-timeText: fmt.time(x.ts),
-statusText: x.status === 'done' ? '已完成' : '待处理'
-}));
-const list = this.data.list.concat(rows);
-this.setData({ list, page: this.data.page + 1, hasMore: res.hasMore });
-})
-.finally(() => {
-this.setData({ loading: false });
-wx.stopPullDownRefresh();
+  goDetail(e) {
+    const id = e.currentTarget.dataset.id;
+    wx.navigateTo({ url: `/pages/RecordDetail/index?id=${id}` });
+  },
+
+  exportExcel() { wx.showToast({ title: '已发起导出（示例）', icon: 'none' }); },
+  goAnalytics() { wx.showToast({ title: '统计页可后续添加', icon: 'none' }); }
 });
-},
 
-
-goDetail(e) {
-const id = e.currentTarget.dataset.id;
-wx.navigateTo({ url: `/pages/RecordDetail/index?id=${id}` });
-},
-
-
-exportExcel() { wx.showToast({ title: '已发起导出（示例）', icon: 'none' }); },
-goAnalytics() { wx.showToast({ title: '统计页可后续添加', icon: 'none' }); }
-});
