@@ -33,7 +33,7 @@ Page({
 
     wx.cloud.callFunction({
       name: 'auth',
-      data: { op: 'login' }
+      data: { op: 'login', pwd: this.data.pwd }
     }).then(res => {
       const { code, data, msg } = res.result || {};
       if (code !== 0) throw new Error(msg || '登录失败');
