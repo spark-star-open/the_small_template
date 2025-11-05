@@ -34,16 +34,21 @@ Page({
     if (!this.data.hasMore) return;
     this.setData({ loading: true });
 
-    adminSrv.list({ page: this.data.page, pageSize: this.data.pageSize, ...this.data.filters })
-      .then(res => {
-        const rows = (res.rows || []).map(x => ({
-          ...x,
-          timeText: fmt.time(x.ts),
-          statusText: x.status === 'done' ? '已完成' : '待处理'
-        }));
-        const list = this.data.list.concat(rows);
-        this.setData({ list, page: this.data.page + 1, hasMore: !!res.hasMore });
-      })
+    (function(){
+      const params = { page: this.data.page, pageSize: this.data.pageSize };
+      Object.assign(params, this.data.filters || {});
+      return adminSrv.list(params)
+        .then(res => {
+          const rows = (res.rows || []).map(x => {
+            const y = Object.assign({}, x);
+            y.timeText = fmt.time(x.updatedAt || x.createdAt || x.ts || Date.now());
+            y.statusText = x.status === 'active' ? '进行中' : (x.status === 'archived' ? '已归档' : (x.status === 'done' ? '已完成' : '待处理'));
+            return y;
+          });
+          const list = this.data.list.concat(rows);
+          this.setData({ list: list, page: this.data.page + 1, hasMore: !!res.hasMore });
+        })
+    }).call(this)
       .finally(() => {
         this.setData({ loading: false });
         wx.stopPullDownRefresh();
@@ -52,10 +57,9 @@ Page({
 
   goDetail(e) {
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/RecordDetail/index?id=${id}` });
+    wx.navigateTo({ url: `/pages/ProjectDetail/index?id=${id}` });
   },
 
   exportExcel() { wx.showToast({ title: '已发起导出（示例）', icon: 'none' }); },
   goAnalytics() { wx.showToast({ title: '统计页可后续添加', icon: 'none' }); }
 });
-

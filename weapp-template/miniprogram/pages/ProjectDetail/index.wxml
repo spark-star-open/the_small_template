@@ -1,0 +1,21 @@
+<view class="wrap">
+  <view class="title-row">
+    <view class="title">项目记录</view>
+    <button class="btn add" size="mini" bindtap="addRecord">新增记录</button>
+  </view>
+  <block wx:if="{{!list.length && !loading}}">
+    <view class="empty">暂无记录</view>
+  </block>
+  <block wx:for="{{list}}" wx:key="_id">
+    <view class="item">
+      <view class="row" bindtap="goRecordDetail" data-id="{{item._id}}">
+        <text class="time">{{item.timeText}}</text>
+        <text class="status">{{item.statusText}}</text>
+      </view>
+      <view class="content elli" bindtap="goRecordDetail" data-id="{{item._id}}">{{item.content}}</view>
+      <view class="ops">
+        <button class="btn danger" size="mini" data-id="{{item._id}}" bindtap="deleteRecord">删除</button>
+      </view>
+    </view>
+  </block>
+</view>

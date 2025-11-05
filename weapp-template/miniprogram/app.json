@@ -5,11 +5,21 @@
     "pages/SubmitSuccess/index",
     "pages/AdminLogin/index",
     "pages/AdminDashboard/index",
+    "pages/ProjectDetail/index",
+    "pages/AddRecordForm/index",
     "pages/RecordDetail/index"
   ],
   "window": {
     "navigationBarTitleText": "防火门项目勘查",
     "navigationBarBackgroundColor": "#ffffff",
     "backgroundTextStyle": "dark"
+  },
+  "requiredPrivateInfos": [
+    "chooseLocation"
+  ],
+  "permission": {
+    "scope.userLocation": {
+      "desc": "用于选择店铺位置等功能"
+    }
   }
 }

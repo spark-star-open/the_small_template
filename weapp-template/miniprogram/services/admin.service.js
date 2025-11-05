@@ -1,19 +1,50 @@
 // services/admin.service.js
-// Minimal stub service for demo purposes
 
-function list({ page = 1, pageSize = 10, date = '', keyword = '' } = {}) {
-  return new Promise((resolve) => {
-    // Simulate empty dataset
-    resolve({ rows: [], hasMore: false });
-  });
+function call(name, data = {}) {
+  return new Promise((resolve, reject) => {
+    wx.cloud.callFunction({ name, data })
+      .then(res => {
+        const r = res.result || {}
+        if (r.code === 0) resolve(r.data)
+        else reject(new Error(r.msg || 'cloud error'))
+      })
+      .catch(reject)
+  })
+}
+
+function list({ page = 1, pageSize = 10, keyword = '' } = {}) {
+  return call('getProjects', { page, pageSize, keyword }).then(d => ({
+    rows: d.rows || [],
+    hasMore: !!d.hasMore
+  }))
+}
+
+function addProject(data) {
+  return call('addProject', data)
+}
+
+function updateProject(_id, patch) {
+  return call('updateProject', { _id, patch })
+}
+
+function getRecords(projectId, page = 1, pageSize = 20) {
+  return call('getRecords', { projectId, page, pageSize })
+}
+
+function addRecord(data) {
+  return call('addRecord', data)
+}
+
+function deleteRecord(_id) {
+  return call('deleteRecord', { _id })
+}
+
+function stats(projectId) {
+  return call('statistics', { projectId })
 }
 
 function detail(id) {
-  return new Promise((resolve) => {
-    // Simulate a record detail
-    resolve({ id, ts: Date.now(), status: 'pending' });
-  });
+  return call('getRecords', { recordId: id })
 }
 
-module.exports = { list, detail };
-
+module.exports = { list, addProject, updateProject, getRecords, addRecord, deleteRecord, stats, detail }

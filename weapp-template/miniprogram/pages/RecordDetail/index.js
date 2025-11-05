@@ -1,4 +1,4 @@
-const adminSrv = require('../../services/admin.service');
+ï»¿const adminSrv = require('../../services/admin.service');
 const fmt = require('../../utils/format');
 
 Page({
@@ -9,9 +9,16 @@ Page({
   },
   fetch(id) {
     adminSrv.detail(id).then(d => {
-      d.timeText = fmt.time(d.ts);
-      d.statusText = d.status === 'done' ? 'ÒÑÍê³É' : '´ý´¦Àí';
+      if (!d) {
+        wx.showToast({ title: 'è®°å½•ä¸å­˜åœ¨', icon: 'none' });
+        setTimeout(() => { wx.navigateBack(); }, 1500);
+        return;
+      }
+      d.timeText = fmt.time(d.ts || d.createdAt || Date.now());
+      d.statusText = d.status === 'done' ? 'å·²å®Œæˆ' : 'å¾…å¤„ç†';
       this.setData({ detail: d });
+    }).catch(() => {
+      wx.showToast({ title: 'åŠ è½½å¤±è´¥', icon: 'none' });
     });
   }
 });

@@ -1,12 +1,12 @@
 ﻿const { db } = require('./db')
-const { ctx, getUserByOpenid } = require('./auth_help')
+const { ctx, getUserByOpenid, upsertUser } = require('./auth_help')
 
 exports.main = async (event) => {
   const { OPENID } = ctx()
   const { op = 'login', pwd } = event || {}
 
   if (op === 'login') {
-    // Password-only admin login
+    // Password-only admin login; match multiple password field names
     if (!pwd) {
       return { code: 401, msg: '请输入密码' }
     }
@@ -14,12 +14,16 @@ exports.main = async (event) => {
     try {
       const { data } = await db.collection('users').where(
         _.and([
-          { roles: _.in(['admin']) },
+          _.or([{ roles: _.in(['admin']) }, { isAdmin: true }]),
           _.or([{ adminPassword: pwd }, { password: pwd }, { loginPwd: pwd }])
         ])
       ).get()
       if (data && data.length) {
-        return { code: 0, data: { roles: ['admin'], _id: data[0]._id } }
+        // Ensure current OPENID has admin role for downstream admin checks
+        let me = await getUserByOpenid(OPENID)
+        const roles = new Set([...(me && me.roles ? me.roles : []), 'admin'])
+        me = await upsertUser(OPENID, { roles: Array.from(roles) })
+        return { code: 0, data: me }
       }
       return { code: 401, msg: '密码错误或未设置' }
     } catch (e) {
