@@ -1,7 +1,9 @@
-<view class="wrap">
-<view class="logo">防火门项目勘察</view>
-<view class="card">
-<button class="btn primary" bindtap="goFiller">我是填写者</button>
-<button class="btn plain" bindtap="goAdmin">我是管理者</button>
-</view>
+<view class="wrap container">
+	<view class="app-header">
+		<image src="/images/logo.jpg" class="logo" mode="aspectFit" />
+	</view>
+	<view class="card">
+		<button class="btn primary" bindtap="goFiller">我是填写者</button>
+		<button class="btn plain" bindtap="goAdmin">我是管理者</button>
+	</view>
 </view>

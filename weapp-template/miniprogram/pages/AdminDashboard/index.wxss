@@ -1,6 +1,7 @@
-.wrap { padding: 24rpx; }
-.filters { display: grid; grid-template-columns: 1fr; gap: 16rpx; margin-bottom: 16rpx; }
-.picker, .search { background: #fff; border-radius: 12rpx; padding: 20rpx; font-size: 28rpx; }
+.wrap { padding: 24rpx; padding-bottom: 120rpx; position: relative; }
+.filters { display: flex; align-items: center; gap: 12rpx; margin-bottom: 16rpx; }
+.picker { background: #fff; border-radius: 12rpx; padding: 14rpx 18rpx; font-size: 26rpx; }
+.search { background: #fff; border-radius: 12rpx; padding: 12rpx 16rpx; font-size: 26rpx; flex: 1; }
 .item { background: #fff; border-radius: 12rpx; padding: 24rpx; margin-bottom: 16rpx; }
 .row { display: flex; justify-content: space-between; align-items: center; }
 .title { font-size: 32rpx; font-weight: 600; }
@@ -10,4 +11,16 @@
 .badge.pending { background: #fff6e5; color: #cc7a00; }
 .loadmore { text-align: center; color: #888; padding: 24rpx 0; }
 .empty { text-align: center; color: #999; padding: 120rpx 0; }
-.toolbar { position: fixed; right: 24rpx; bottom: 48rpx; display: grid; gap: 12rpx; }
+
+/* inline export button inside filters */
+.export-btn { background: linear-gradient(90deg,#06c25b,#07c160); color: #fff; border: none; padding: 8rpx 12rpx; border-radius: 6rpx; font-size: 24rpx; box-shadow: 0 4rpx 12rpx rgba(6,194,104,0.12); align-self: center; }
+
+/* bottom action bar */
+.bottom-bar { position: fixed; left: 16rpx; right: 16rpx; bottom: 18rpx; display: flex; justify-content: space-between; gap: 16rpx; align-items: center; }
+.bottom-btn { flex: 1; background: #fff; color: #111; border: 1rpx solid #ddd; border-radius: 12rpx; height: 88rpx; font-size: 28rpx; }
+.bottom-btn + .bottom-btn { margin-left: 0; }
+
+/* ensure content not covered: add extra spacing at bottom via wrap padding-bottom */
+
+/* 长条导出按钮（显示在“没有更多了”下方） */
+.export-long { display: block; width: 100%; height: 96rpx; margin: 16rpx 0; border-radius: 12rpx; background: linear-gradient(90deg,#06c25b,#07c160); color: #fff; font-size: 32rpx; border: none; box-shadow: 0 6rpx 18rpx rgba(6,194,104,0.12); display:flex; align-items:center; justify-content:center; }

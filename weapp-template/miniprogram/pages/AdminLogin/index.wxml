@@ -1,4 +1,7 @@
 ﻿<view class="wrap">
+  <view class="back-button" bindtap="goHome">
+    <image src="/images/back-arrow.svg" mode="aspectFit" class="back-icon" />
+  </view>
   <view class="title">请输入管理者密码</view>
 
   <view class="field">

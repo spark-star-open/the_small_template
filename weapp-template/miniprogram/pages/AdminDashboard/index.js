@@ -62,4 +62,9 @@ Page({
 
   exportExcel() { wx.showToast({ title: '已发起导出（示例）', icon: 'none' }); },
   goAnalytics() { wx.showToast({ title: '统计页可后续添加', icon: 'none' }); }
+  ,
+  goHome() {
+    // 返回到应用首页（role-select），使用 reLaunch 保证彻底跳转
+    wx.reLaunch({ url: '/pages/role-select/index' });
+  }
 });
