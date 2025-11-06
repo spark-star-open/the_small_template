@@ -1,3 +1,18 @@
-page {
+/* 全局基础样式与字体 */
+page, .page {
   background-color: #f6f6f6;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+  color: #222;
+  font-size: 30rpx; /* 全局基础字号，按需在页面覆盖 */
 }
+
+/* 常用标题 */
+.h1 { font-size: 44rpx; font-weight: 700; color: #111; }
+.h2 { font-size: 36rpx; font-weight: 600; color: #222; }
+
+/* 按钮与输入统一样式 */
+.btn { font-size: 32rpx; line-height: normal; }
+input, textarea { font-size: 30rpx; }
+
+/* 全局容器节距 */
+.container { padding: 24rpx; box-sizing: border-box; }

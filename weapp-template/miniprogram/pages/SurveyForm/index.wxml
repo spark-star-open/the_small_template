@@ -2,14 +2,12 @@
 <view class="container">
   <!-- 顶部封面 -->
   <view class="header">
-    <image class="cover-icon" src="/images/cover-icon.png" mode="aspectFit"></image>
-    <text class="cover-text">添加封面</text>
+    <image class="cover-icon" src="/images/logo.jpg" mode="aspectFit"></image>
   </view>
 
   <!-- 标题 -->
   <view class="title-section">
     <text class="main-title">防火门项目勘察现场记录表</text>
-    <text class="subtitle">添加提示：文字、图片或链接</text>
   </view>
 
   <!-- 操作按钮组 -->

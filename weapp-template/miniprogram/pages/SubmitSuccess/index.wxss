@@ -5,6 +5,6 @@
 .meta-item { font-size: 28rpx; color: #333; line-height: 1.8; }
 .label { color: #888; }
 .actions { width: 100%; margin-top: 60rpx; display: grid; grid-template-columns: 1fr 1fr; gap: 24rpx; }
-.btn { height: 88rpx; border-radius: 999rpx; font-size: 30rpx; }
+.btn { height: 88rpx; border-radius: 999rpx; font-size: 30rpx; display: flex; align-items: center; justify-content: center; }
 .primary { background: #07c160; color: #fff; border: none; }
 .plain { background: #fff; color: #07c160; border: 2rpx solid #07c160; }

@@ -1,10 +1,12 @@
 page { background: #f5f6f8; }
-.wrap { padding: 48rpx; }
+.wrap { padding: 48rpx; position: relative; }
+.back-button { position: absolute; top: 20rpx; left: 20rpx; width: 64rpx; height: 64rpx; display: flex; align-items: center; justify-content: center; }
+.back-button .back-icon { width: 100%; height: 100%; }
 .title { font-size: 32rpx; font-weight: 600; margin-bottom: 24rpx; }
 .field { display: flex; align-items: center; background: #fff; border-radius: 12rpx; padding: 0 24rpx; height: 96rpx; }
 .field input { flex: 1; font-size: 30rpx; }
 .toggle { color: #07c160; margin-left: 16rpx; }
-.btn { margin-top: 32rpx; height: 96rpx; border-radius: 999rpx; font-size: 32rpx; }
+.btn { margin-top: 32rpx; height: 96rpx; border-radius: 999rpx; font-size: 32rpx; display: flex; align-items: center; justify-content: center; width: 100%; box-sizing: border-box; }
 .primary { background: #07c160; color: #fff; border: none; }
 .secondary { background: #fff; color: #333; border: 2rpx solid #ddd; }
 

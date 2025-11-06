@@ -11,24 +11,20 @@ page {
 /* 顶部封面 */
 .header {
   background-color: #fff;
-  height: 200rpx;
+  height: 260rpx; /* increased to fit larger logo */
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   border-bottom: 1rpx solid #e5e5e5;
 }
 
 .cover-icon {
-  width: 60rpx;
-  height: 60rpx;
-  margin-bottom: 10rpx;
+  width: 420rpx; /* enlarged logo width */
+  height: 110rpx; /* enlarged logo height */
+  object-fit: contain;
 }
 
-.cover-text {
-  font-size: 28rpx;
-  color: #999;
-}
+.cover-text { display: none; }
 
 /* 标题区域 */
 .title-section {

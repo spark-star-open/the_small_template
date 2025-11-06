@@ -1,7 +1,13 @@
-page { background: #f5f6f8; }
-.wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40rpx; box-sizing: border-box; }
-.logo { font-size: 36rpx; font-weight: 600; color: #111; margin-bottom: 40rpx; }
-.card { width: 100%; max-width: 640rpx; display: grid; gap: 24rpx; }
-.btn { height: 96rpx; border-radius: 999rpx; font-size: 32rpx; }
-.primary { background: #07c160; color: #fff; border: none; }
+.page { background: #f5f6f8; }
+.wrap { min-height: 100vh; display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; position: relative; }
+.app-header { display: flex; align-items: center; justify-content: center; position: absolute; left: 50%; top: 25%; transform: translate(-50%, -50%); width: 100%; }
+.app-header .logo { width: 640rpx; height: 160rpx; max-width: 96%; }
+.card { width: 100%; max-width: 640rpx; display: grid; gap: 24rpx; position: absolute; left: 50%; transform: translateX(-50%); bottom: 22%; }
+.btn { height: 120rpx; border-radius: 20rpx; font-size: 36rpx; display: flex; align-items: center; justify-content: center; }
+.primary { background: linear-gradient(90deg,#06c25b,#07c160); color: #fff; border: none; box-shadow: 0 6rpx 18rpx rgba(6,194,104,0.12); }
 .plain { background: #fff; color: #07c160; border: 2rpx solid #07c160; }
+
+/* ensure texts inside buttons center and scale */
+.btn text, .btn {
+	text-align: center;
+}
