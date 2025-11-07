@@ -20,5 +20,12 @@ Page({
     }).catch(() => {
       wx.showToast({ title: '加载失败', icon: 'none' });
     });
+  },
+  goBack() {
+    if (getCurrentPages && getCurrentPages().length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.reLaunch({ url: '/pages/ProjectDetail/index' });
+    }
   }
 });

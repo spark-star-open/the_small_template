@@ -1,29 +1,27 @@
-﻿<view class="wrap">
-  <view class="title">鏂板璁板綍</view>
+<view class="wrap">
+  <view class="title">新增记录</view>
 
   <view class="field">
-    <view class="label">绫诲瀷</view>
+    <view class="label">类型</view>
     <picker mode="selector" range="{{types}}" range-key="label" value="{{typeIndex}}" bindchange="onTypeChange">
       <view class="picker">{{types[typeIndex].label}}</view>
     </picker>
   </view>
 
   <view class="field">
-    <view class="label">鍐呭</view>
-    <textarea></textarea>
+    <view class="label">内容</view>
+    <textarea class="input" placeholder="请输入记录内容" value="{{content}}" data-field="content" bindinput="onInput"></textarea>
   </view>
 
   <view class="field">
-    <view class="label">鎴愭湰(鍏?</view>
+    <view class="label">成本(元)</view>
     <input class="input" type="digit" placeholder="0" value="{{cost}}" data-field="cost" bindinput="onInput" />
   </view>
 
   <view class="field">
-    <view class="label">宸ユ椂(灏忔椂)</view>
+    <view class="label">工时(小时)</view>
     <input class="input" type="digit" placeholder="0" value="{{workHours}}" data-field="workHours" bindinput="onInput" />
   </view>
 
-  <button class="btn primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">鎻愪氦</button>
+  <button class="btn primary" loading="{{submitting}}" disabled="{{submitting}}" bindtap="onSubmit">提交</button>
 </view>
-
-

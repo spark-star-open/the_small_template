@@ -1,6 +1,6 @@
-﻿<view class="wrap">
+<view class="wrap">
   <view class="back-button" bindtap="goHome">
-    <image src="/images/back-arrow.svg" mode="aspectFit" class="back-icon" />
+    <image src="/images/arrow-right.png" mode="aspectFit" class="back-icon back-rotate" />
   </view>
   <view class="title">请输入管理者密码</view>
 

@@ -1,23 +1,28 @@
 <view class="wrap" wx:if="{{detail}}">
-<view class="card">
-<view class="row"><text class="label">门店</text><text>{{detail.shopName}}</text></view>
-<view class="row"><text class="label">项目编号</text><text>{{detail.projectCode}}</text></view>
-<view class="row"><text class="label">提交时间</text><text>{{detail.timeText}}</text></view>
-<view class="row"><text class="label">状态</text><text>{{detail.statusText}}</text></view>
-</view>
+  <view class="nav">
+    <view class="back" bindtap="goBack">
+      <image src="/images/arrow-right.png" class="icon back-rotate" mode="aspectFit" />
+    </view>
+    <view class="nav-title">记录详情</view>
+  </view>
 
+  <view class="card">
+    <view class="row"><text class="label">门店</text><text>{{detail.shopName}}</text></view>
+    <view class="row"><text class="label">项目编号</text><text>{{detail.projectCode}}</text></view>
+    <view class="row"><text class="label">提交时间</text><text>{{detail.timeText}}</text></view>
+    <view class="row"><text class="label">状态</text><text>{{detail.statusText}}</text></view>
+  </view>
 
-<view class="card">
-<view class="section">现场图片</view>
-<scroll-view scroll-x class="imgs">
-<image wx:for="{{detail.shopPhotos}}" wx:key="*this" src="{{item}}" mode="aspectFill" class="img" />
-</scroll-view>
-</view>
+  <view class="card">
+    <view class="section">现场图片</view>
+    <scroll-view scroll-x class="imgs">
+      <image wx:for="{{detail.shopPhotos}}" wx:key="*this" src="{{item}}" mode="aspectFill" class="img" />
+    </scroll-view>
+  </view>
 
-
-<view class="card">
-<view class="section">定位</view>
-<view class="row">{{detail.location}}</view>
-</view>
+  <view class="card">
+    <view class="section">定位</view>
+    <view class="row">{{detail.location}}</view>
+  </view>
 </view>
 <view class="empty" wx:else>加载中...</view>

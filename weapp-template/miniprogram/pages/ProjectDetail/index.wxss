@@ -11,3 +11,10 @@ page { background: #f5f6f8; }
 .btn.add { background: #07c160; color: #fff; }
 .btn.danger { background: #fa5151; color: #fff; margin-top: 12rpx; }
 .ops { display: flex; justify-content: flex-end; }
+
+.nav{position:relative;height:88rpx;display:flex;align-items:center;}
+.back{position:absolute;left:12rpx;top:0;width:88rpx;height:88rpx;display:flex;align-items:center;justify-content:center}
+.icon{width:44rpx;height:44rpx}
+.back-rotate{transform:rotate(180deg)}
+.nav-title{flex:1;text-align:center;font-size:32rpx;font-weight:600}
+

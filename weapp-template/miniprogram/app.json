@@ -7,6 +7,7 @@
     "pages/AdminDashboard/index",
     "pages/ProjectDetail/index",
     "pages/AddRecordForm/index",
+    "pages/SurveyDetail/index",
     "pages/RecordDetail/index"
   ],
   "window": {

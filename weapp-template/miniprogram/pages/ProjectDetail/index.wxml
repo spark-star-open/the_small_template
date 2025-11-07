@@ -1,4 +1,11 @@
 <view class="wrap">
+  <view class="nav">
+    <view class="back" bindtap="goBack">
+      <image src="/images/arrow-right.png" class="icon back-rotate" mode="aspectFit" />
+    </view>
+    <view class="nav-title">项目记录</view>
+  </view>
+
   <view class="title-row">
     <view class="title">项目记录</view>
     <button class="btn add" size="mini" bindtap="addRecord">新增记录</button>

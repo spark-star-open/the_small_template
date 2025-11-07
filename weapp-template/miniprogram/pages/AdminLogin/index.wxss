@@ -10,3 +10,6 @@ page { background: #f5f6f8; }
 .primary { background: #07c160; color: #fff; border: none; }
 .secondary { background: #fff; color: #333; border: 2rpx solid #ddd; }
 
+
+.back-rotate { transform: rotate(180deg); }
+

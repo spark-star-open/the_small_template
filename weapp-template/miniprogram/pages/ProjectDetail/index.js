@@ -1,4 +1,4 @@
-const adminSrv = require('../../services/admin.service');
+﻿const adminSrv = require('../../services/admin.service');
 const fmt = require('../../utils/format');
 
 Page({
@@ -8,22 +8,19 @@ Page({
     page: 1,
     pageSize: 20,
     hasMore: true,
-    loading: false
+    loading: false,
+    navigating: false
   },
 
   onLoad(options) {
-    const id = options && options.id;
-    this.setData({ projectId: id || '' });
+    const id = (options && options.id) || '';
+    this.setData({ projectId: id });
+    this._alive = true;
     this.fetch(true);
   },
+  onUnload() { this._alive = false; },
 
-  onShow() {
-    // Refresh when returning from add/delete
-    if (this.data.projectId) {
-      this.fetch(true);
-    }
-  },
-
+  onShow() { if (this.data.projectId) this.fetch(true); },
   onPullDownRefresh() { this.fetch(true); },
   onReachBottom() { if (this.data.hasMore && !this.data.loading) this.fetch(false); },
 
@@ -35,6 +32,7 @@ Page({
 
     adminSrv.getRecords(this.data.projectId, this.data.page, this.data.pageSize)
       .then(res => {
+        if (!this._alive) return;
         const rows = (res.rows || []).map(r => {
           const y = Object.assign({}, r);
           y.timeText = fmt.time(r.ts || r.createdAt || Date.now());
@@ -42,21 +40,34 @@ Page({
           return y;
         });
         const list = this.data.list.concat(rows);
-        this.setData({ list: list, page: this.data.page + 1, hasMore: !!res.hasMore });
+        this.setData({ list, page: this.data.page + 1, hasMore: !!res.hasMore });
       })
       .finally(() => {
+        if (!this._alive) return;
         this.setData({ loading: false });
         wx.stopPullDownRefresh();
       });
   },
 
+  goBack() {
+    if (getCurrentPages && getCurrentPages().length > 1) {
+      wx.navigateBack();
+    } else {
+      wx.reLaunch({ url: '/pages/AdminDashboard/index' });
+    }
+  },
+
   goRecordDetail(e) {
+    if (this.data.navigating) return;
     const id = e.currentTarget.dataset.id;
-    wx.navigateTo({ url: `/pages/RecordDetail/index?id=${id}` });
+    this.setData({ navigating: true });
+    wx.navigateTo({ url: `/pages/RecordDetail/index?id=${id}`, complete: () => this.setData({ navigating: false }) });
   },
 
   addRecord() {
-    wx.navigateTo({ url: `/pages/AddRecordForm/index?projectId=${this.data.projectId}` });
+    if (this.data.navigating) return;
+    this.setData({ navigating: true });
+    wx.navigateTo({ url: `/pages/AddRecordForm/index?projectId=${this.data.projectId}`, complete: () => this.setData({ navigating: false }) });
   },
 
   deleteRecord(e) {

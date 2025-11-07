@@ -1,35 +1,30 @@
 <view class="wrap">
-	<view class="filters">
-		<picker mode="date" value="{{filters.date}}" bindchange="onDate">
-			<view class="picker">日期：{{filters.date || '全部'}}</view>
-		</picker>
-		<input class="search" value="{{filters.keyword}}" bindinput="onKeyword" placeholder="门店/项目编号" />
+  <view class="filters">
+    <picker mode="date" value="{{filters.date}}" bindchange="onDate">
+      <view class="picker">日期：{{filters.date || '全部'}}</view>
+    </picker>
+    <input class="search" value="{{filters.keyword}}" bindinput="onKeyword" placeholder="门店/项目编号" />
+  </view>
 
-	</view>
+  <block wx:if="{{list.length}}">
+    <block wx:for="{{list}}" wx:key="_id">
+      <view class="item" bindtap="goDetail" data-id="{{item._id}}">
+        <view class="row">
+          <text class="title">{{item.shopName}}</text>
+          <text class="badge {{item.status}}">{{item.statusText}}</text>
+        </view>
+        <view class="sub">{{item.projectCode}} · {{item.timeText}}</view>
+      </view>
+    </block>
+    <view class="loadmore" wx:if="{{loading}}">加载中...</view>
+    <view class="loadmore" wx:if="{{!hasMore && !loading}}">没有更多</view>
+    <button class="export-long" wx:if="{{!hasMore && !loading}}" bindtap="exportExcel">导出 Excel</button>
+  </block>
+  <view class="empty" wx:else>暂无数据</view>
 
-
-<block wx:if="{{list.length}}">
-<block wx:for="{{list}}" wx:key="id">
-<view class="item" bindtap="goDetail" data-id="{{item.id}}">
-<view class="row">
-<text class="title">{{item.shopName}}</text>
-<text class="badge {{item.status}}">{{item.statusText}}</text>
-</view>
-<view class="sub">{{item.projectCode}} · {{item.timeText}}</view>
-</view>
-</block>
-<view class="loadmore" wx:if="{{loading}}">加载中...</view>
-<view class="loadmore" wx:if="{{!hasMore && !loading}}">没有更多了</view>
-	<!-- 当没有更多数据显示时，显示长条导出按钮 -->
-	<button class="export-long" wx:if="{{!hasMore && !loading}}" bindtap="exportExcel">导出 Excel</button>
-</block>
-<view class="empty" wx:else>暂无数据</view>
-
-
-	<!-- bottom action bar: 刷新 / 统计概览 / 返回主页 -->
-	<view class="bottom-bar">
-		<button class="bottom-btn" bindtap="refresh">刷新</button>
-		<button class="bottom-btn" bindtap="goAnalytics">统计概览</button>
-		<button class="bottom-btn" bindtap="goHome">返回主页</button>
-	</view>
+  <view class="bottom-bar">
+    <button class="bottom-btn" bindtap="refresh">刷新</button>
+    <button class="bottom-btn" bindtap="goAnalytics">统计概览</button>
+    <button class="bottom-btn" bindtap="goHome">返回主页</button>
+  </view>
 </view>

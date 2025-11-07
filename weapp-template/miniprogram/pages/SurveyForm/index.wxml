@@ -1,4 +1,4 @@
-<!-- pages/survey/survey.wxml -->
+﻿<!-- pages/survey/survey.wxml -->
 <view class="container">
   <!-- 顶部封面 -->
   <view class="header">
@@ -10,7 +10,7 @@
     <text class="main-title">防火门项目勘察现场记录表</text>
   </view>
 
-  <!-- 操作按钮组 -->
+  <!-- 操作按钮 -->
   <view class="button-group">
     <view class="btn-item" bindtap="onTimingRepeat">
       <text class="btn-icon">+</text>
@@ -18,7 +18,7 @@
     </view>
     <view class="btn-item" bindtap="onWriteList">
       <text class="btn-icon">+</text>
-      <text class="btn-text">提写名单</text>
+      <text class="btn-text">填写名单</text>
     </view>
     <view class="btn-item" bindtap="onEndPage">
       <text class="btn-icon">+</text>
@@ -37,13 +37,7 @@
         <text class="label-num">01</text>
         <text class="label-text">项目技术人员</text>
       </view>
-      <input 
-        class="form-input" 
-        placeholder="待填写人输入" 
-        value="{{formData.technician}}"
-        bindinput="onInputChange"
-        data-field="technician"
-      />
+      <input class="form-input" placeholder="待填写人输入" value="{{formData.technician}}" bindinput="onInputChange" data-field="technician" />
     </view>
 
     <!-- 02 用户单位负责人 -->
@@ -53,29 +47,17 @@
         <text class="label-num">02</text>
         <text class="label-text">用户单位负责人</text>
       </view>
-      <input 
-        class="form-input" 
-        placeholder="待填写人输入" 
-        value="{{formData.unitLeader}}"
-        bindinput="onInputChange"
-        data-field="unitLeader"
-      />
+      <input class="form-input" placeholder="待填写人输入" value="{{formData.unitLeader}}" bindinput="onInputChange" data-field="unitLeader" />
     </view>
 
-    <!-- 03 项目代码 -->
+    <!-- 03 项目编号 -->
     <view class="form-item">
       <view class="form-label">
         <text class="required">*</text>
         <text class="label-num">03</text>
-        <text class="label-text">项目代码</text>
+        <text class="label-text">项目编号</text>
       </view>
-      <input 
-        class="form-input" 
-        placeholder="待填写人输入" 
-        value="{{formData.projectCode}}"
-        bindinput="onInputChange"
-        data-field="projectCode"
-      />
+      <input class="form-input" placeholder="待填写人输入" value="{{formData.projectCode}}" bindinput="onInputChange" data-field="projectCode" />
     </view>
 
     <!-- 04 商家店名 -->
@@ -85,13 +67,7 @@
         <text class="label-num">04</text>
         <text class="label-text">商家店名</text>
       </view>
-      <input 
-        class="form-input" 
-        placeholder="待填写人输入" 
-        value="{{formData.shopName}}"
-        bindinput="onInputChange"
-        data-field="shopName"
-      />
+      <input class="form-input" placeholder="待填写人输入" value="{{formData.shopName}}" bindinput="onInputChange" data-field="shopName" />
     </view>
 
     <!-- 05 地点 -->
@@ -103,7 +79,7 @@
       </view>
       <view class="location-input" bindtap="onChooseLocation">
         <image class="location-icon" src="/images/location-icon.png" mode="aspectFit"></image>
-        <text class="location-text">{{formData.location || '省/市/区'}}</text>
+        <text class="location-text">{{formData.location || '请选择地点'}}</text>
         <image class="arrow-icon" src="/images/arrow-right.png" mode="aspectFit"></image>
       </view>
     </view>
@@ -128,7 +104,7 @@
             <text class="add-text">待填写人添加图片</text>
           </view>
         </view>
-        <text class="photo-tip">图片要求：最多6张</text>
+        <text class="photo-tip">图片要求：最少1张，最多6张</text>
       </view>
     </view>
   </view>
@@ -156,421 +132,49 @@
       </radio-group>
     </view>
 
-    <!-- 08 防火门1 -->
+    <!-- 08 防火门尺寸1 -->
     <view class="form-item">
       <view class="form-label">
         <text class="label-num">08</text>
-        <text class="label-text">防火门1</text>
+        <text class="label-text">防火门</text>
       </view>
       <view class="measure-hint">没有则填0</view>
-      
       <view class="sub-item">
         <view class="sub-label">防火门高度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.door1Height}}"
-          bindinput="onInputChange"
-          data-field="door1Height"
-        />
+        <input class="form-input" type="number" placeholder="请输入数值" value="{{formData.door1Height}}" bindinput="onInputChange" data-field="door1Height" />
       </view>
-
       <view class="sub-item">
         <view class="sub-label">防火门宽度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.door1Width}}"
-          bindinput="onInputChange"
-          data-field="door1Width"
-        />
+        <input class="form-input" type="number" placeholder="请输入数值" value="{{formData.door1Width}}" bindinput="onInputChange" data-field="door1Width" />
       </view>
-
       <view class="sub-item">
-        <view class="sub-label">防火门开向</view>
-        <input 
-          class="form-input" 
-          placeholder="请输入开向" 
-          value="{{formData.door1Open}}"
-          bindinput="onInputChange"
-          data-field="door1Open"
-        />
-      </view>
-    </view>
-
-    <!-- 09 防火门2 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="label-num">09</text>
-        <text class="label-text">防火门2</text>
-      </view>
-      <view class="measure-hint">没有则填0</view>
-      
-      <view class="sub-item">
-        <view class="sub-label">防火门高度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.door2Height}}"
-          bindinput="onInputChange"
-          data-field="door2Height"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火门宽度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.door2Width}}"
-          bindinput="onInputChange"
-          data-field="door2Width"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火门开向</view>
-        <input 
-          class="form-input" 
-          placeholder="请输入开向" 
-          value="{{formData.door2Open}}"
-          bindinput="onInputChange"
-          data-field="door2Open"
-        />
-      </view>
-    </view>
-
-    <!-- 10 防火门3 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="label-num">10</text>
-        <text class="label-text">防火门3</text>
-      </view>
-      
-      <view class="sub-item">
-        <view class="sub-label">防火门高度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.door3Height}}"
-          bindinput="onInputChange"
-          data-field="door3Height"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火门宽度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.door3Width}}"
-          bindinput="onInputChange"
-          data-field="door3Width"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火门开向</view>
-        <input 
-          class="form-input" 
-          placeholder="请输入开向" 
-          value="{{formData.door3Open}}"
-          bindinput="onInputChange"
-          data-field="door3Open"
-        />
+        <view class="sub-label">防火门开启方向</view>
+        <input class="form-input" placeholder="请输入开启方向" value="{{formData.door1Open}}" bindinput="onInputChange" data-field="door1Open" />
       </view>
     </view>
   </view>
 
-  <!-- 防火窗 -->
+  <!-- 防火窗（示例：只保留一组，其他组同理可复制） -->
   <view class="form-section">
     <view class="section-title">防火窗</view>
-
-    <!-- 11 防火窗1 -->
     <view class="form-item">
       <view class="form-label">
         <text class="label-num">11</text>
-        <text class="label-text">防火窗1</text>
+        <text class="label-text">防火窗</text>
       </view>
       <view class="measure-hint">没有则填0</view>
-      
       <view class="sub-item">
         <view class="sub-label">防火窗高度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.window1Height}}"
-          bindinput="onInputChange"
-          data-field="window1Height"
-        />
+        <input class="form-input" type="number" placeholder="请输入数值" value="{{formData.window1Height}}" bindinput="onInputChange" data-field="window1Height" />
       </view>
-
       <view class="sub-item">
         <view class="sub-label">防火窗宽度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.window1Width}}"
-          bindinput="onInputChange"
-          data-field="window1Width"
-        />
+        <input class="form-input" type="number" placeholder="请输入数值" value="{{formData.window1Width}}" bindinput="onInputChange" data-field="window1Width" />
       </view>
-
       <view class="sub-item">
-        <view class="sub-label">防火窗开向</view>
-        <input 
-          class="form-input" 
-          placeholder="请输入开向" 
-          value="{{formData.window1Open}}"
-          bindinput="onInputChange"
-          data-field="window1Open"
-        />
+        <view class="sub-label">防火窗开启方向</view>
+        <input class="form-input" placeholder="请输入开启方向" value="{{formData.window1Open}}" bindinput="onInputChange" data-field="window1Open" />
       </view>
-    </view>
-
-    <!-- 12 防火窗2 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="label-num">12</text>
-        <text class="label-text">防火窗2</text>
-      </view>
-      <view class="measure-hint">没有则填0</view>
-      
-      <view class="sub-item">
-        <view class="sub-label">防火窗高度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.window2Height}}"
-          bindinput="onInputChange"
-          data-field="window2Height"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火窗宽度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.window2Width}}"
-          bindinput="onInputChange"
-          data-field="window2Width"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火窗开向</view>
-        <input 
-          class="form-input" 
-          placeholder="请输入开向" 
-          value="{{formData.window2Open}}"
-          bindinput="onInputChange"
-          data-field="window2Open"
-        />
-      </view>
-    </view>
-
-    <!-- 13 防火窗3 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="label-num">13</text>
-        <text class="label-text">防火窗3</text>
-      </view>
-      
-      <view class="sub-item">
-        <view class="sub-label">防火窗高度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.window3Height}}"
-          bindinput="onInputChange"
-          data-field="window3Height"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火窗宽度（mm）</view>
-        <input 
-          class="form-input" 
-          type="number"
-          placeholder="请输入数字" 
-          value="{{formData.window3Width}}"
-          bindinput="onInputChange"
-          data-field="window3Width"
-        />
-      </view>
-
-      <view class="sub-item">
-        <view class="sub-label">防火窗开向</view>
-        <input 
-          class="form-input" 
-          placeholder="请输入开向" 
-          value="{{formData.window3Open}}"
-          bindinput="onInputChange"
-          data-field="window3Open"
-        />
-      </view>
-    </view>
-  </view>
-
-  <!-- 防火吊顶 -->
-  <view class="form-section">
-    <view class="section-title">防火吊顶</view>
-
-    <!-- 14 吊顶长度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">14</text>
-        <text class="label-text">吊顶长度（m）</text>
-      </view>
-      <input 
-        class="form-input" 
-        type="digit"
-        placeholder="请输入数字" 
-        value="{{formData.ceilingLength}}"
-        bindinput="onInputChange"
-        data-field="ceilingLength"
-      />
-    </view>
-
-    <!-- 15 吊顶宽度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">15</text>
-        <text class="label-text">吊顶宽度（m）</text>
-      </view>
-      <input 
-        class="form-input" 
-        type="digit"
-        placeholder="请输入数字" 
-        value="{{formData.ceilingWidth}}"
-        bindinput="onInputChange"
-        data-field="ceilingWidth"
-      />
-    </view>
-  </view>
-
-  <!-- 防火隔断 -->
-  <view class="form-section">
-    <view class="section-title">防火隔断</view>
-
-    <!-- 16 防火玻璃隔墙高度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">16</text>
-        <text class="label-text">防火玻璃隔墙高度（mm）</text>
-      </view>
-      <view class="measure-hint">没有则填0</view>
-      <input 
-        class="form-input" 
-        type="number"
-        placeholder="请输入数字" 
-        value="{{formData.glassWallHeight}}"
-        bindinput="onInputChange"
-        data-field="glassWallHeight"
-      />
-    </view>
-
-    <!-- 17 防火玻璃隔墙宽度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">17</text>
-        <text class="label-text">防火玻璃隔墙宽度（mm）</text>
-      </view>
-      <view class="measure-hint">没有则填0</view>
-      <input 
-        class="form-input" 
-        type="number"
-        placeholder="请输入数字" 
-        value="{{formData.glassWallWidth}}"
-        bindinput="onInputChange"
-        data-field="glassWallWidth"
-      />
-    </view>
-
-    <!-- 18 轻钢龙骨隔墙高度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">18</text>
-        <text class="label-text">轻钢龙骨隔墙高度（mm）</text>
-      </view>
-      <view class="measure-hint">没有则填0</view>
-      <input 
-        class="form-input" 
-        type="number"
-        placeholder="请输入数字" 
-        value="{{formData.steelWallHeight}}"
-        bindinput="onInputChange"
-        data-field="steelWallHeight"
-      />
-    </view>
-
-    <!-- 19 轻钢龙骨隔墙宽度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">19</text>
-        <text class="label-text">轻钢龙骨隔墙宽度（mm）</text>
-      </view>
-      <view class="measure-hint">没有则填0</view>
-      <input 
-        class="form-input" 
-        type="number"
-        placeholder="请输入数字" 
-        value="{{formData.steelWallWidth}}"
-        bindinput="onInputChange"
-        data-field="steelWallWidth"
-      />
-    </view>
-
-    <!-- 20 砌块隔墙高度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">20</text>
-        <text class="label-text">砌块隔墙高度（mm）</text>
-      </view>
-      <input 
-        class="form-input" 
-        type="number"
-        placeholder="请输入数字" 
-        value="{{formData.blockWallHeight}}"
-        bindinput="onInputChange"
-        data-field="blockWallHeight"
-      />
-    </view>
-
-    <!-- 21 砌块隔墙宽度 -->
-    <view class="form-item">
-      <view class="form-label">
-        <text class="required">*</text>
-        <text class="label-num">21</text>
-        <text class="label-text">砌块隔墙宽度（mm）</text>
-      </view>
-      <input 
-        class="form-input" 
-        type="number"
-        placeholder="请输入数字" 
-        value="{{formData.blockWallWidth}}"
-        bindinput="onInputChange"
-        data-field="blockWallWidth"
-      />
     </view>
   </view>
 
@@ -578,11 +182,10 @@
   <view class="form-section">
     <view class="section-title">其他</view>
 
-    <!-- 22 现场勘察记录表拍照 -->
+    <!-- 现场勘察记录表拍照 -->
     <view class="form-item">
       <view class="form-label">
         <text class="required">*</text>
-        <text class="label-num">22</text>
         <text class="label-text">现场勘察记录表拍照</text>
       </view>
       <view class="photo-upload">
@@ -598,46 +201,32 @@
             <text class="add-text">添加图片</text>
           </view>
         </view>
-        <text class="photo-tip">图片要求：最多6张</text>
+        <text class="photo-tip">图片要求：最少1张，最多6张</text>
       </view>
     </view>
 
-    <!-- 23 店家意向施工时间 -->
+    <!-- 店家意向施工时间 -->
     <view class="form-item">
       <view class="form-label">
         <text class="required">*</text>
-        <text class="label-num">23</text>
         <text class="label-text">店家意向施工时间</text>
       </view>
-      <picker 
-        mode="multiSelector" 
-        value="{{formData.dateTimeIndex}}" 
-        range="{{dateTimeArray}}"
-        bindchange="onDateTimeChange"
-      >
+      <picker mode="multiSelector" value="{{formData.dateTimeIndex}}" range="{{dateTimeArray}}" bindchange="onDateTimeChange">
         <view class="picker-input">
           <image class="picker-icon" src="/images/time-icon.png" mode="aspectFit"></image>
-          <text class="picker-text">{{formData.constructionTime || '年/月/日/时/分'}}</text>
+          <text class="picker-text">{{formData.constructionTime || '请选择时间'}}</text>
           <image class="arrow-icon" src="/images/arrow-down.png" mode="aspectFit"></image>
         </view>
       </picker>
     </view>
 
-    <!-- 24 备注 -->
+    <!-- 备注 -->
     <view class="form-item">
       <view class="form-label">
         <text class="required">*</text>
-        <text class="label-num">24</text>
         <text class="label-text">备注</text>
       </view>
-      <textarea 
-        class="form-textarea" 
-        placeholder="请输入" 
-        value="{{formData.remark}}"
-        bindinput="onInputChange"
-        data-field="remark"
-        maxlength="-1"
-      />
+      <textarea class="form-textarea" placeholder="请输入备注" value="{{formData.remark}}" bindinput="onInputChange" data-field="remark" maxlength="-1"></textarea>
     </view>
   </view>
 

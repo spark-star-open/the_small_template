@@ -1,0 +1,36 @@
+<view class="wrap" wx:if="{{detail}}">
+  <view class="nav">
+    <view class="back" bindtap="goBack">
+      <image src="/images/arrow-right.png" class="icon back-rotate" mode="aspectFit" />
+    </view>
+    <view class="nav-title">勘察记录</view>
+  </view>
+
+  <view class="card">
+    <view class="row"><text class="label">项目编号</text><text>{{detail.projectCode}}</text></view>
+    <view class="row"><text class="label">门店</text><text>{{detail.shopName}}</text></view>
+    <view class="row"><text class="label">地址</text><text class="elli">{{detail.location}}</text></view>
+    <view class="row"><text class="label">施工时间</text><text>{{detail.constructionTime}}</text></view>
+    <view class="row"><text class="label">是否拆除旧门</text><text>{{detail.needRemove}}</text></view>
+  </view>
+
+  <view class="card">
+    <view class="section">店面照片</view>
+    <scroll-view scroll-x class="imgs">
+      <image wx:for="{{detail.shopPhotos}}" wx:key="*this" src="{{item}}" mode="aspectFill" class="img" />
+    </scroll-view>
+  </view>
+
+  <view class="card">
+    <view class="section">现场勘察照片</view>
+    <scroll-view scroll-x class="imgs">
+      <image wx:for="{{detail.surveyPhotos}}" wx:key="*this" src="{{item}}" mode="aspectFill" class="img" />
+    </scroll-view>
+  </view>
+
+  <view class="footer">
+    <button class="btn primary" wx:if="{{detail.status !== 'done'}}" bindtap="markDone">标记为已处理</button>
+    <view class="done-tip" wx:else>已处理</view>
+  </view>
+</view>
+<view class="empty" wx:else>加载中...</view>
