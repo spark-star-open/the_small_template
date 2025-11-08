@@ -97,6 +97,13 @@ page {
   margin-bottom: 40rpx;
 }
 
+/* 防火门分组美化 */
+.door-group {
+  background-color: #fff;
+  padding: 30rpx 24rpx 24rpx 24rpx;
+  margin-bottom: 40rpx;
+}
+
 .form-label {
   display: flex;
   align-items: center;
