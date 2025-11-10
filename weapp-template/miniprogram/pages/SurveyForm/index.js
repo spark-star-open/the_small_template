@@ -12,10 +12,23 @@ const pageDef = {
       dateTimeIndex: [0,0,0,0,0]
     },
     dateTimeArray: [],
-    submitting: false
+    submitting: false,
+    uploading: false,
+    openid: ''
   },
 
-  onLoad() { this.initDateTimeArray(); },
+  onLoad() { 
+    this.initDateTimeArray(); 
+    // 获取 openid 用于云存储分目录
+    try {
+      wx.cloud.callFunction({ name: 'auth', data: { op: 'myinfo' } })
+        .then(res => {
+          const d = (res && res.result && res.result.data) || {};
+          if (d && d._openid) this.setData({ openid: d._openid });
+        })
+        .catch(()=>{});
+    } catch(e) {}
+  },
 
   initDateTimeArray() {
     const years = [], months = [], days = [], hours = [], minutes = [];
@@ -58,14 +71,59 @@ const pageDef = {
     const field = e.currentTarget.dataset.field; const that = this;
     const current = this.data.formData[field] || []; const max = Math.max(0, 6 - current.length);
     wx.chooseMedia({ count: max, mediaType: ['image'], sourceType: ['album','camera'], sizeType: ['compressed'],
-      success(res){ const imgs = current.concat(res.tempFiles.map(f=>f.tempFilePath)); const o={}; o['formData.'+field]=imgs; that.setData(o); }
+      async success(res){
+        const files = res.tempFiles || [];
+        if (!files.length){ return; }
+        that.setData({ uploading: true });
+        wx.showLoading({ title: '上传图片中...' });
+        try {
+          // 构造云存储路径前缀：surveys/YYYY/MM/DD/<projectCode>/<field>
+          const d = new Date();
+          const y = d.getFullYear();
+          const m = (d.getMonth()+1).toString().padStart(2,'0');
+          const day = d.getDate().toString().padStart(2,'0');
+          const proj = encodeURIComponent(that.data.formData.projectCode || 'unknown');
+          const openid = encodeURIComponent(that.data.openid || 'anon');
+          const folder = `surveys/${y}/${m}/${day}/${openid}/${proj}/${field}`;
+          const fileIDs = await that._uploadMediaFiles(files, folder);
+          const imgs = current.concat(fileIDs);
+          const o={}; o['formData.'+field]=imgs; that.setData(o);
+        } catch (err){
+          wx.showToast({ title: '图片上传失败', icon: 'none' });
+        } finally {
+          that.setData({ uploading: false });
+          wx.hideLoading();
+        }
+      }
     });
   },
 
   onDeletePhoto(e){
     const field = e.currentTarget.dataset.field; const index = e.currentTarget.dataset.index;
-    const arr = (this.data.formData[field] || []).slice(); arr.splice(index,1);
-    const o={}; o['formData.'+field]=arr; this.setData(o);
+    const list = (this.data.formData[field] || []).slice();
+    const toDel = list[index];
+    wx.showModal({
+      title: '删除图片',
+      content: '确定要删除这张图片吗？',
+      success: (r) => {
+        if (!r.confirm) return;
+        list.splice(index,1);
+        const o={}; o['formData.'+field]=list; this.setData(o);
+        // 同步删除云端文件（仅当是 cloud:// fileID）
+        if (typeof toDel === 'string' && toDel.indexOf('cloud://') === 0){
+          wx.cloud.deleteFile({ fileList: [toDel] }).catch(()=>{});
+        }
+      }
+    });
+  },
+
+  // 单选项变更（如“是否拆除旧门”）
+  onRadioChange(e){
+    const field = e.currentTarget.dataset.field || '';
+    const value = (e.detail && e.detail.value) || '';
+    if (!field) return;
+    const obj = {}; obj['formData.' + field] = value;
+    this.setData(obj);
   },
 
   onTimingRepeat(){ wx.showToast({ title: '定时和重复功能', icon: 'none' }); },
@@ -82,13 +140,39 @@ const pageDef = {
 
   onSubmit(){
     if (!this.validateForm || !this.validateForm()) return;
-    if (this.data.submitting) return;
+    if (this.data.submitting || this.data.uploading) return;
     this.setData({ submitting: true });
     wx.showLoading({ title: '提交中...' });
-    const data = this.data.formData || {};
-    wx.cloud.callFunction({ name: 'submitSurvey', data: { formData: data } })
+    const data = Object.assign({}, this.data.formData || {});
+    // 确保图片都为云 fileID（cloud:// 开头）
+    const ensureCloud = async (arr=[]) => {
+      const out = [];
+      for (const p of (arr||[])){
+        if (typeof p === 'string' && p.indexOf('cloud://') === 0){ out.push(p); continue; }
+        // 非云路径也上传
+        const up = await this._uploadMediaFiles([{ tempFilePath: p }]);
+        out.push(up[0]);
+      }
+      return out;
+    };
+    Promise.resolve()
+      .then(() => ensureCloud(data.shopPhotos))
+      .then(ids => { data.shopPhotos = ids; return ensureCloud(data.surveyPhotos); })
+      .then(ids => { data.surveyPhotos = ids; return wx.cloud.callFunction({ name: 'submitSurvey', data: { formData: data } }); })
       .then(()=>{ wx.hideLoading(); this.setData({ submitting: false }); const ts=Date.now(); const shopName=this.data.formData.shopName||''; wx.navigateTo({ url: `/pages/SubmitSuccess/index?ts=${ts}&shopName=${encodeURIComponent(shopName)}` }); })
       .catch(err=>{ wx.hideLoading(); this.setData({ submitting: false }); wx.showToast({ title: (err&&err.message)?err.message:'提交失败', icon: 'none' }); });
+  },
+
+  // 私有：上传图片到云存储，返回 fileID 数组
+  _uploadMediaFiles(files, folder){
+    const prefix = (folder && typeof folder === 'string') ? folder.replace(/\/+$/,'') : 'surveys';
+    const list = (files||[]).map((f,idx)=>({ path: f.tempFilePath || f.path || f }));
+    const tasks = list.map((x, i) => {
+      const ext = (x.path.split('.').pop() || 'jpg').toLowerCase();
+      const cloudPath = `${prefix}/${Date.now()}_${Math.floor(Math.random()*100000)}_${i}.${ext}`;
+      return wx.cloud.uploadFile({ cloudPath, filePath: x.path }).then(r => r.fileID);
+    });
+    return Promise.all(tasks);
   }
 };
 

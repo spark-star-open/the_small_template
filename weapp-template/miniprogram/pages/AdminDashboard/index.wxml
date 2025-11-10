@@ -10,7 +10,10 @@
     <block wx:for="{{list}}" wx:key="_id">
       <view class="item" bindtap="goDetail" data-id="{{item._id}}">
         <view class="row">
-          <text class="title">{{item.shopName}}</text>
+          <view class="row-left">
+            <view wx:if="{{selectMode}}" class="radio {{ selectedMap[item._id] ? 'on' : '' }}" data-id="{{item._id}}" catchtap="toggleSelect"></view>
+            <text class="title">{{item.shopName}}</text>
+          </view>
           <text class="badge {{item.status}}">{{item.statusText}}</text>
         </view>
         <view class="sub">{{item.projectCode}} · {{item.timeText}}</view>
@@ -18,7 +21,15 @@
     </block>
     <view class="loadmore" wx:if="{{loading}}">加载中...</view>
     <view class="loadmore" wx:if="{{!hasMore && !loading}}">没有更多</view>
-    <button class="export-long" wx:if="{{!hasMore && !loading}}" bindtap="exportExcel">导出 Excel</button>
+    <!-- 操作条：全部标为已读 + 清除 -->
+    <view class="ops-bar" wx:if="{{!hasMore && !loading}}">
+      <button class="ops-btn" bindtap="markAllRead">全部标为已读</button>
+      <button class="ops-btn danger" bindtap="onClearTap">{{ selectMode ? (selectedIds.length ? '清除(' + selectedIds.length + ')' : '清除') : '清除' }}</button>
+    </view>
+    <button class="export-long" wx:if="{{!hasMore && !loading}}" bindtap="exportExcel">{{ exportMode ? '取消导出' : '导出 Excel' }}</button>
+    <view class="export-tip" wx:if="{{exportMode}}">导出模式：点击列表项即可导出该条</view>
+    <view class="export-msg" wx:if="{{exportNotice}}">{{exportNotice}}</view>
+    <button class="link-btn" wx:if="{{exportNotice && (exportTempURL || exportFileID)}}" bindtap="copyExportLink">复制下载链接</button>
   </block>
   <view class="empty" wx:else>暂无数据</view>
 
