@@ -34,6 +34,9 @@ function listSurveys({ page = 1, pageSize = 10, keyword = '' } = {}) {
 function getSurvey(id) { return call('getSurvey', { id }) }
 function submitSurvey(formData) { return call('submitSurvey', { formData }) }
 function updateSurvey(id, patch) { return call('updateSurvey', { id, patch }) }
+function deleteSurvey(id) { return call('deleteSurvey', { id }) }
+function exportSurvey(id) { return call('exportSurvey', { id }) }
+function exportSurveys(ids = []) { return call('exportSurveys', { ids }) }
 
 module.exports = {
   call,
@@ -51,4 +54,7 @@ module.exports = {
   getSurvey,
   submitSurvey,
   updateSurvey,
+  deleteSurvey,
+  exportSurvey,
+  exportSurveys,
 }

@@ -11,7 +11,7 @@
     <view class="row"><text class="label">门店</text><text>{{detail.shopName}}</text></view>
     <view class="row"><text class="label">地址</text><text class="elli">{{detail.location}}</text></view>
     <view class="row"><text class="label">施工时间</text><text>{{detail.constructionTime}}</text></view>
-    <view class="row"><text class="label">是否拆除旧门</text><text>{{detail.needRemove}}</text></view>
+    <view class="row"><text class="label">是否拆除防火门</text><text>{{detail.needRemove === 'yes' ? '是' : (detail.needRemove === 'no' ? '否' : '')}}</text></view>
   </view>
 
   <view class="card">

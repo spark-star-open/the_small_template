@@ -12,12 +12,13 @@ exports.main = async (event = {}) => {
 
   const { page = 1, pageSize = 10, keyword = '' } = event
   const coll = db.collection('surveys')
+  const base = { deleted: db.command.neq(true) }
   const where = keyword
     ? db.command.or([
-        { shopName: db.RegExp({ regexp: keyword, options: 'i' }) },
-        { projectCode: db.RegExp({ regexp: keyword, options: 'i' }) }
+        Object.assign({ shopName: db.RegExp({ regexp: keyword, options: 'i' }) }, base),
+        Object.assign({ projectCode: db.RegExp({ regexp: keyword, options: 'i' }) }, base)
       ])
-    : {}
+    : base
 
   const totalRes = await coll.where(where).count()
   const total = totalRes.total || 0
@@ -30,4 +31,3 @@ exports.main = async (event = {}) => {
 
   return { code: 0, data: { rows: listRes.data || [], total, hasMore: page * pageSize < total } }
 }
-
