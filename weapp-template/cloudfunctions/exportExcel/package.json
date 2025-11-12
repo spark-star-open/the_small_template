@@ -1,9 +1,9 @@
 {
-  "name": "export-survey",
+  "name": "export-excel",
   "version": "1.0.0",
   "main": "index.js",
   "dependencies": {
-    "wx-server-sdk": "^3.1.0",
+    "wx-server-sdk": "latest",
     "xlsx": "^0.18.5"
   }
 }

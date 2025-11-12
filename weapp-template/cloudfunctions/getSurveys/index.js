@@ -10,20 +10,32 @@ exports.main = async (event = {}) => {
   const { OPENID } = cloud.getWXContext()
   if (!(await ensureAdmin(OPENID))) return { code: 403, msg: '需要管理员权限' }
 
-  const { page = 1, pageSize = 10, keyword = '' } = event
+  const { page = 1, pageSize = 10, keyword = '', date = '' } = event
   const coll = db.collection('surveys')
   const base = { deleted: db.command.neq(true) }
-  const where = keyword
+  // 可选日期过滤（YYYY-MM-DD），按 createdAt 当日范围
+  let dateCond = {}
+  if (date && typeof date === 'string') {
+    try {
+      const [y,m,d] = date.split('-').map(x=>parseInt(x,10))
+      if (y && m && d) {
+        const start = new Date(y, m-1, d).getTime()
+        const end = new Date(y, m-1, d+1).getTime()
+        dateCond = { createdAt: db.command.gte(start).and(db.command.lt(end)) }
+      }
+    } catch(e) {}
+  }
+  const whereKeyword = keyword
     ? db.command.or([
-        Object.assign({ shopName: db.RegExp({ regexp: keyword, options: 'i' }) }, base),
-        Object.assign({ projectCode: db.RegExp({ regexp: keyword, options: 'i' }) }, base)
+        Object.assign({ shopName: db.RegExp({ regexp: keyword, options: 'i' }) }, base, dateCond),
+        Object.assign({ projectCode: db.RegExp({ regexp: keyword, options: 'i' }) }, base, dateCond)
       ])
-    : base
+    : Object.assign({}, base, dateCond)
 
-  const totalRes = await coll.where(where).count()
+  const totalRes = await coll.where(whereKeyword).count()
   const total = totalRes.total || 0
 
-  const listRes = await coll.where(where)
+  const listRes = await coll.where(whereKeyword)
     .orderBy('createdAt', 'desc')
     .skip((page - 1) * pageSize)
     .limit(pageSize)

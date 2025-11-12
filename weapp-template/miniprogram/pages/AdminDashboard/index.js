@@ -35,6 +35,17 @@ Page({
     if (this._loadingCount === 0) try { wx.hideLoading(); } catch(e) {}
   },
 
+  // 检测是否开发者工具环境（避免使用已废弃的 getSystemInfoSync）
+  _isDevtools() {
+    try {
+      if (typeof wx.getAppBaseInfo === 'function') {
+        const info = wx.getAppBaseInfo();
+        return info && info.platform === 'devtools';
+      }
+    } catch (e) {}
+    return false;
+  },
+
   onLoad() { this._alive = true; },
   onUnload() { this._alive = false; this._loadingCount = 0; try { wx.hideLoading(); } catch(e) {} },
   onHide() { this._loadingCount = 0; try { wx.hideLoading(); } catch(e) {} },
@@ -122,7 +133,7 @@ Page({
   _doExport(id) {
     this._safeShowLoading('导出中...');
     // 优先云函数生成 xlsx
-    adminSrv.exportSurvey(id)
+    adminSrv.exportExcel(id)
       .then(async ({ fileID }) => {
         if (!fileID) throw new Error('导出失败');
         this.setData({ exportFileID: fileID });
@@ -134,8 +145,7 @@ Page({
             this.setData({ exportTempURL: u });
             // 在开发者工具环境，自动复制链接方便粘贴到浏览器下载
             try {
-              const sys = wx.getSystemInfoSync();
-              if (sys && sys.platform === 'devtools') {
+              if (this._isDevtools()) {
                 wx.setClipboardData({ data: u, success: ()=>{ console.log('导出下载链接(复制到浏览器下载):', u);} });
               }
             } catch(e){}
@@ -159,7 +169,11 @@ Page({
         this.setData({ selectMode: false, selectedIds: [], selectedMap: {}, exportNotice: `ok`, exportFileName: fileName, exportLocalPath: savedPath });
         this.exportMode = false;
       })
-      .catch(async () => {
+      .catch((err) => {
+        console.error('导出失败', err);
+        const msg = (err && err.message) ? ('导出失败：' + err.message) : '导出失败';
+        wx.showToast({ title: msg, icon: 'none' });
+      }) /*
         // 退化到 CSV 本地生成
         try {
           const d = await adminSrv.getSurvey(id);
@@ -185,7 +199,8 @@ Page({
         } catch (e) {
           wx.showToast({ title: '导出失败', icon: 'none' });
         }
-      })
+      wx.showToast({ title: '导出失败，请检查云端导出函数', icon: 'none' });
+      */
       .finally(() => {
         this._safeHideLoading();
         this.exportMode = false;
@@ -194,7 +209,7 @@ Page({
 
   _doBatchExport(ids) {
     this._safeShowLoading('导出中...');
-    adminSrv.exportSurveys(ids)
+    adminSrv.exportExcelBatch(ids)
       .then(async ({ fileID }) => {
         if (!fileID) throw new Error('导出失败');
         this.setData({ exportFileID: fileID });
@@ -203,7 +218,7 @@ Page({
           const u = urlRes && urlRes.fileList && urlRes.fileList[0] && urlRes.fileList[0].tempFileURL;
           if (u) {
             this.setData({ exportTempURL: u });
-            try { const sys = wx.getSystemInfoSync(); if (sys && sys.platform === 'devtools') wx.setClipboardData({ data: u }); } catch(e){}
+            try { if (this._isDevtools()) wx.setClipboardData({ data: u }); } catch(e){}
           }
         } catch(e){}
         return wx.cloud.downloadFile({ fileID });
@@ -220,8 +235,36 @@ Page({
         this.setData({ selectMode: false, selectedIds: [], selectedMap: {}, exportNotice: `ok`, exportFileName: fileName, exportLocalPath: savedPath });
         this.exportMode = false;
       })
-      .catch(() => wx.showToast({ title: '导出失败', icon: 'none' }))
+      .catch((err) => {
+        console.error('导出失败', err);
+        const msg = (err && err.message) ? ('导出失败：' + err.message) : '导出失败';
+        wx.showToast({ title: msg, icon: 'none' });
+      })
       .finally(() => this._safeHideLoading());
+  },
+
+  // 自定义导出列：按你的字段清单配置顺序与标题
+  _getExportColumns() {
+    // 示例映射：请按你的字段清单调整顺序与标题
+    return [
+      { key: '_id', title: 'ID' },
+      { key: 'projectCode', title: '项目编号' },
+      { key: 'shopName', title: '门店' },
+      { key: 'location', title: '地址' },
+      { key: 'constructionTime', title: '施工时间' },
+      { key: 'needRemove', title: '是否拆除防火门' },
+      { key: 'door1Height', title: '防火门高度(mm)' },
+      { key: 'door1Width', title: '防火门宽度(mm)' },
+      { key: 'door1Open', title: '防火门开启方向' },
+      { key: 'window1Height', title: '防火窗高度(mm)' },
+      { key: 'window1Width', title: '防火窗宽度(mm)' },
+      { key: 'window1Open', title: '防火窗开启方向' },
+      { key: 'shopPhotos', title: '店面照片(fileID)' },
+      { key: 'surveyPhotos', title: '现场勘察照片(fileID)' },
+      { key: 'status', title: '状态' },
+      { key: 'createdAt', title: '创建时间' },
+      { key: 'updatedAt', title: '更新时间' }
+    ]
   },
 
   // 点击文件名：优先打开本地文件；若无则复制云端链接

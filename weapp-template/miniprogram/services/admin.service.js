@@ -8,7 +8,14 @@ function call(name, data = {}) {
         if (r.code === 0) resolve(r.data)
         else reject(new Error(r.msg || 'cloud error'))
       })
-      .catch(reject)
+      .catch(err => {
+        const msg = (err && err.errMsg) || ''
+        if (msg.indexOf('ResourceNotFound.Function') !== -1 || msg.indexOf('Function not found') !== -1) {
+          reject(new Error('云函数不存在：' + name + '。请在微信开发者工具右键该函数目录执行“创建并部署：云端安装依赖”。'))
+          return
+        }
+        reject(err)
+      })
   })
 }
 
@@ -35,8 +42,9 @@ function getSurvey(id) { return call('getSurvey', { id }) }
 function submitSurvey(formData) { return call('submitSurvey', { formData }) }
 function updateSurvey(id, patch) { return call('updateSurvey', { id, patch }) }
 function deleteSurvey(id) { return call('deleteSurvey', { id }) }
-function exportSurvey(id) { return call('exportSurvey', { id }) }
-function exportSurveys(ids = []) { return call('exportSurveys', { ids }) }
+// renamed cloud functions to avoid singular/plural confusion
+function exportExcel(id, columns) { return call('exportExcel', { id, columns }) }
+function exportExcelBatch(ids = [], columns) { return call('exportExcelBatch', { ids, columns }) }
 
 module.exports = {
   call,
@@ -55,6 +63,6 @@ module.exports = {
   submitSurvey,
   updateSurvey,
   deleteSurvey,
-  exportSurvey,
-  exportSurveys,
+  exportExcel,
+  exportExcelBatch,
 }

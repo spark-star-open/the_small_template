@@ -14,7 +14,18 @@ exports.main = async (event = {}) => {
   const docId = id || _id
   if (!docId) return { code: 400, msg: '缺少 id' }
 
+  // 尝试清理云端文件
+  try {
+    const res = await db.collection('surveys').doc(docId).get()
+    const d = res && res.data
+    if (d) {
+      const list = []
+      ;(d.shopPhotos || []).forEach(p => { if (typeof p === 'string' && p.indexOf('cloud://') === 0) list.push(p) })
+      ;(d.surveyPhotos || []).forEach(p => { if (typeof p === 'string' && p.indexOf('cloud://') === 0) list.push(p) })
+      if (list.length) { try { await cloud.deleteFile({ fileList: list }) } catch(e) {} }
+    }
+  } catch(e) {}
+
   await db.collection('surveys').doc(docId).remove()
   return { code: 0, data: true }
 }
-

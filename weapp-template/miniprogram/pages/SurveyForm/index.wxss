@@ -102,6 +102,28 @@ page {
   background-color: #fff;
   padding: 30rpx 24rpx 24rpx 24rpx;
   margin-bottom: 40rpx;
+  border-bottom: 2rpx solid #f5f5f5;
+}
+
+.door-group:last-child {
+  border-bottom: none;
+}
+
+.door-group .form-label {
+  min-width: 180rpx;
+  margin-bottom: 25rpx;
+}
+
+.door-group .sub-item {
+  padding-left: 30rpx;
+  border-left: 6rpx solid #f5f5f5;
+  margin-bottom: 25rpx;
+}
+
+.door-group .sub-label {
+  color: #333;
+  font-size: 28rpx;
+  margin-bottom: 15rpx;
 }
 
 .form-label {
@@ -125,6 +147,14 @@ page {
 .label-text {
   font-size: 28rpx;
   color: #333;
+  font-weight: 500;
+}
+
+.form-section .form-label {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20rpx;
+  min-width: 180rpx;
 }
 
 /* 子项目样式 */
