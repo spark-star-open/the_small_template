@@ -65,7 +65,8 @@ function computePrice(d = {}) {
   const combo = partArea + glassArea + lsArea
   const priceCombo = Math.max(0, combo - 8) * 520
   const total = priceDoor + priceWin + priceCeiling + priceCombo
-  return Math.round(total * 100) / 100
+  const fix = (n)=> Math.round(n * 100) / 100
+  return { door: fix(priceDoor), win: fix(priceWin), combo: fix(priceCombo), ceiling: fix(priceCeiling), total: fix(total) }
 }
 
 // 扫描记录动态生成列（可传入 columns 覆盖）
@@ -123,11 +124,16 @@ exports.main = async (event = {}) => {
 
     const __cols = buildColumnsFromList(list, columns)
     const header = __cols.map(c => c.title || c.key || String(c))
-    header.push('价格(元)')
+    header.push('防火门价格(元)')
+    header.push('防火窗价格(元)')
+    header.push('防火隔断+玻璃+轻钢价格(元)')
+    header.push('吊顶价格(元)')
+    header.push('总价(元)')
     const rows = [header]
     list.forEach(r => {
       const row = __cols.map(c => cellValue(r[c.key || c], c.key || c))
-      row.push(computePrice(r))
+      const p = computePrice(r)
+      row.push(p.door, p.win, p.combo, p.ceiling, p.total)
       rows.push(row)
     })
     const XLSX = require('xlsx')

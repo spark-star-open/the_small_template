@@ -86,8 +86,14 @@ function computePrice(d = {}) {
   const combo = partArea + glassArea + lsArea
   const priceCombo = Math.max(0, combo - 8) * 520
   const total = priceDoor + priceWin + priceCeiling + priceCombo
-  // 保留两位小数
-  return Math.round(total * 100) / 100
+  const fix = (n)=> Math.round(n * 100) / 100
+  return {
+    door: fix(priceDoor),
+    win: fix(priceWin),
+    combo: fix(priceCombo),
+    ceiling: fix(priceCeiling),
+    total: fix(total)
+  }
 }
 
 // 动态生成列（包含所有填写项；自动识别防火门/窗多组）
@@ -214,8 +220,13 @@ exports.main = async (event = {}) => {
       if (!isFilled(val)) continue
       rows.push([title, cellValue(val, key)])
     }
-    // 追加价格
-    rows.push(['价格(元)', computePrice(d)])
+    // 追加分项价格与总价
+    const p = computePrice(d)
+    rows.push(['防火门价格(元)', p.door])
+    rows.push(['防火窗价格(元)', p.win])
+    rows.push(['防火隔断+玻璃+轻钢价格(元)', p.combo])
+    rows.push(['吊顶价格(元)', p.ceiling])
+    rows.push(['总价(元)', p.total])
     const XLSX = require('xlsx')
     const ws = XLSX.utils.aoa_to_sheet([["字段","值"], ...rows])
     const wb = XLSX.utils.book_new()
