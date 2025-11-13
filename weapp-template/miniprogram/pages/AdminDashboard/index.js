@@ -9,7 +9,9 @@ Page({
     pageSize: 10,
     hasMore: true,
     loading: false,
-    filters: { date: '', keyword: '' },
+    filters: { dateRange: '', keyword: '' },
+    dateRangeOptions: ['全部', '三天内', '一周内', '一个月内', '六个月内'],
+    dateRangeIndex: 0,
     navigating: false,
     // 清除选择相关（默认多选）
     selectedIds: [],
@@ -54,7 +56,12 @@ Page({
   onPullDownRefresh() { this.fetchList(true); },
   onReachBottom() { if (this.data.hasMore && !this.data.loading) this.fetchList(false); },
 
-  onDate(e) { this.setData({ 'filters.date': e.detail.value }); this.fetchList(true); },
+  onDateRange(e) {
+    const idx = Number(e.detail.value || 0)
+    const map = ['', '3d', '7d', '30d', '180d']
+    this.setData({ dateRangeIndex: idx, 'filters.dateRange': map[idx] })
+    this.fetchList(true)
+  },
   onKeyword(e) { this.setData({ 'filters.keyword': e.detail.value }); },
   refresh() { this.fetchList(true); },
 
@@ -103,6 +110,68 @@ Page({
     wx.navigateTo({ url: `/pages/SurveyDetail/index?id=${id}`, complete: () => this.setData({ navigating: false }) });
   },
 
+  // 图片操作菜单（预览/批量保存）
+  async onImageMenu(e) {
+    const id = e.currentTarget.dataset.id
+    if (!id) return
+    try {
+      const res = await wx.showActionSheet({ itemList: ['预览全部', '批量保存到相册'] })
+      const tap = res.tapIndex
+      if (tap === 0) return this._previewImages(id)
+      if (tap === 1) return this._saveImages(id)
+    } catch (err) {}
+  },
+
+  async _getImageUrlsById(id) {
+    try {
+      const d = await adminSrv.getSurvey(id)
+      const toArray = (v)=> Array.isArray(v) ? v : (v ? [v] : [])
+      const fileList = [...toArray(d.shopPhotos), ...toArray(d.surveyPhotos)].filter(Boolean)
+      if (!fileList.length) return []
+      const urlRes = await wx.cloud.getTempFileURL({ fileList })
+      const urls = (urlRes && urlRes.fileList || []).map(x => x.tempFileURL).filter(Boolean)
+      return urls
+    } catch (e) { return [] }
+  },
+
+  async _previewImages(id) {
+    this._safeShowLoading('准备中...')
+    const urls = await this._getImageUrlsById(id)
+    this._safeHideLoading()
+    if (!urls.length) return wx.showToast({ title: '该记录暂无图片', icon: 'none' })
+    wx.previewImage({ current: urls[0], urls })
+  },
+
+  async _saveImages(id) {
+    this._safeShowLoading('保存中...')
+    const urls = await this._getImageUrlsById(id)
+    if (!urls.length) { this._safeHideLoading(); return wx.showToast({ title: '该记录暂无图片', icon: 'none' }) }
+    const ensureAuth = () => new Promise((resolve) => {
+      wx.getSetting({ success: (s)=>{
+        if (s.authSetting && s.authSetting['scope.writePhotosAlbum']) return resolve(true)
+        wx.authorize({ scope: 'scope.writePhotosAlbum', success: ()=>resolve(true), fail: ()=>{
+          wx.showModal({ title:'需要授权', content:'保存到相册需要授权，请在设置中开启“保存到相册”权限', success: (r)=>{
+            if (r.confirm) wx.openSetting({ success: ()=>resolve(false) }); else resolve(false)
+          }})
+        }})
+      }, fail: ()=>resolve(false) })
+    })
+    const okAuth = await ensureAuth()
+    if (!okAuth) { this._safeHideLoading(); return }
+    let ok=0, fail=0
+    for (const u of urls) {
+      try {
+        const resp = await wx.downloadFile({ url: u })
+        if (resp && resp.tempFilePath) {
+          await wx.saveImageToPhotosAlbum({ filePath: resp.tempFilePath })
+          ok++
+        } else { fail++ }
+      } catch (e) { fail++ }
+    }
+    this._safeHideLoading()
+    wx.showToast({ title: fail?`已保存${ok}张，失败${fail}张`:`已保存${ok}张`, icon: 'none' })
+  },
+
   // 点击左侧圆点切换多选
   toggleSelect(e) {
     const id = e.currentTarget.dataset.id;
@@ -133,7 +202,7 @@ Page({
   _doExport(id) {
     this._safeShowLoading('导出中...');
     // 优先云函数生成 xlsx
-    adminSrv.exportExcel(id)
+    adminSrv.exportExcel(id, undefined, { embedImages: false })
       .then(async ({ fileID }) => {
         if (!fileID) throw new Error('导出失败');
         this.setData({ exportFileID: fileID });
@@ -209,7 +278,7 @@ Page({
 
   _doBatchExport(ids) {
     this._safeShowLoading('导出中...');
-    adminSrv.exportExcelBatch(ids)
+    adminSrv.exportExcelBatch(ids, undefined, { embedImages: false })
       .then(async ({ fileID }) => {
         if (!fileID) throw new Error('导出失败');
         this.setData({ exportFileID: fileID });

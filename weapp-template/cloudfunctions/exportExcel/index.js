@@ -1,6 +1,22 @@
 const dbm = require('./db')
 const tcb = require('wx-server-sdk')
 
+function isFilled(v) {
+  if (v == null) return false
+  if (typeof v === 'string') return v.trim() !== ''
+  if (Array.isArray(v)) return v.length > 0
+  if (typeof v === 'number') return v !== 0 && !Number.isNaN(v)
+  if (typeof v === 'object') return Object.keys(v).length > 0
+  return true
+}
+
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('下载超时')), ms))
+  ])
+}
+
 function fmtDatetime(ts) {
   if (!ts) return ''
   try {
@@ -16,6 +32,62 @@ function cellValue(val, key) {
   if (Array.isArray(val)) return val.join('\n')
   if (val && typeof val === 'object') return JSON.stringify(val)
   return val == null ? '' : String(val)
+}
+
+// 价格计算（单位换算：输入 mm，面积按 m² 计算）
+function computePrice(d = {}) {
+  const keys = Object.keys(d || {})
+  const num = (v) => {
+    const n = Number(v)
+    return Number.isFinite(n) ? n : 0
+  }
+  const areaPair = (h, w) => {
+    const H = num(h), W = num(w)
+    if (H <= 0 || W <= 0) return 0
+    return (H * W) / 1e6 // mm*mm -> m²
+  }
+  let doorArea = 0, winArea = 0, ceilArea = 0, partArea = 0, glassArea = 0, lsArea = 0
+
+  // 动态组：doorN/windowN/partitionN/glassN/lightSteelN/ceilingN
+  const mapH = {}
+  const mapW = {}
+  keys.forEach(k => {
+    let m
+    if ((m = k.match(/^door(\d+)(Height|Width)$/))) {
+      const n = `door${m[1]}`; (m[2] === 'Height' ? (mapH[n] = num(d[k])) : (mapW[n] = num(d[k])))
+    } else if ((m = k.match(/^window(\d+)(Height|Width)$/))) {
+      const n = `window${m[1]}`; (m[2] === 'Height' ? (mapH[n] = num(d[k])) : (mapW[n] = num(d[k])))
+    } else if ((m = k.match(/^partition(\d+)(Height|Width)$/))) {
+      const n = `partition${m[1]}`; (m[2] === 'Height' ? (mapH[n] = num(d[k])) : (mapW[n] = num(d[k])))
+    } else if ((m = k.match(/^glass(\d+)(Height|Width)$/))) {
+      const n = `glass${m[1]}`; (m[2] === 'Height' ? (mapH[n] = num(d[k])) : (mapW[n] = num(d[k])))
+    } else if ((m = k.match(/^lightSteel(\d+)(Height|Width)$/))) {
+      const n = `lightSteel${m[1]}`; (m[2] === 'Height' ? (mapH[n] = num(d[k])) : (mapW[n] = num(d[k])))
+    } else if ((m = k.match(/^ceiling(\d+)(Height|Width)$/))) {
+      const n = `ceiling${m[1]}`; (m[2] === 'Height' ? (mapH[n] = num(d[k])) : (mapW[n] = num(d[k])))
+    }
+  })
+  Object.keys(mapH).forEach(n => {
+    const a = areaPair(mapH[n], mapW[n])
+    if (n.startsWith('door')) doorArea += a
+    else if (n.startsWith('window')) winArea += a
+    else if (n.startsWith('partition')) partArea += a
+    else if (n.startsWith('glass')) glassArea += a
+    else if (n.startsWith('lightSteel')) lsArea += a
+    else if (n.startsWith('ceiling')) ceilArea += a
+  })
+  // 单一吊顶字段（length/width）
+  ceilArea += areaPair(d.ceilingLength, d.ceilingWidth)
+
+  // 计价规则
+  const priceDoor = Math.max(0, doorArea - 3) * 630
+  const priceWin = winArea * 1110
+  const priceCeiling = Math.max(0, ceilArea - 15) * 260
+  const combo = partArea + glassArea + lsArea
+  const priceCombo = Math.max(0, combo - 8) * 520
+  const total = priceDoor + priceWin + priceCeiling + priceCombo
+  // 保留两位小数
+  return Math.round(total * 100) / 100
 }
 
 // 动态生成列（包含所有填写项；自动识别防火门/窗多组）
@@ -37,6 +109,13 @@ function buildColumnsFromDoc(d, columns){
       const t = m2[2] === 'Height' ? '高度(mm)' : (m2[2] === 'Width' ? '宽度(mm)' : '开启方向');
       return `防火窗${n}${t}`;
     }
+    // 吊顶 N 组
+    const mC = key.match(/^ceiling(\d+)(Height|Width|Remark)$/);
+    if (mC){
+      const n = mC[1];
+      const map = { Height: '高度(mm)', Width: '宽度(mm)', Remark: '备注' };
+      return `吊顶${n}${map[mC[2]] || ''}`;
+    }
     // 玻璃与轻钢
     const m4 = key.match(/^glass(\d+)(Height|Width|Remark)$/);
     if (m4){
@@ -57,6 +136,8 @@ function buildColumnsFromDoc(d, columns){
       return `防火隔断${n}${map2[m3[2]] || ''}`;
     }
     const map = {
+      _id: '编号',
+      id: '编号',
       technician: '项目技术人员',
       unitLeader: '用户单位负责人',
       projectCode: '项目编号',
@@ -83,18 +164,19 @@ function buildColumnsFromDoc(d, columns){
   };
 
   const cols = [];
-  const push = (k) => { if (!ignore.has(k) && has(k) && !cols.find(x=>x.key===k)) cols.push({ key: k, title: titleOf(k) }); };
+  const push = (k) => { if (!ignore.has(k) && has(k) && isFilled(d[k]) && !cols.find(x=>x.key===k)) cols.push({ key: k, title: titleOf(k) }); };
 
   // 固定前缀
   ['technician','unitLeader','projectCode','shopName','location','locationDetail','constructionTime','dateTimeIndex','shopPhotos','needRemove','blockWallHeight','blockWallWidth','blockWallRemark','ceilingLength','ceilingWidth'].forEach(push);
-  // 防火门/窗/隔断/玻璃/轻钢系列
-  const doorNums = new Set(); const winNums = new Set(); const partNums = new Set(); const glassNums = new Set(); const lsNums = new Set();
+  // 防火门/窗/隔断/玻璃/轻钢/吊顶 系列
+  const doorNums = new Set(); const winNums = new Set(); const partNums = new Set(); const glassNums = new Set(); const lsNums = new Set(); const ceilNums = new Set();
   Object.keys(d||{}).forEach(k=>{
     let m=k.match(/^door(\d+)/); if(m) doorNums.add(parseInt(m[1],10));
     m=k.match(/^window(\d+)/); if(m) winNums.add(parseInt(m[1],10));
     m=k.match(/^partition(\d+)/); if(m) partNums.add(parseInt(m[1],10));
     m=k.match(/^glass(\d+)/); if(m) glassNums.add(parseInt(m[1],10));
     m=k.match(/^lightSteel(\d+)/); if(m) lsNums.add(parseInt(m[1],10));
+    m=k.match(/^ceiling(\d+)/); if(m) ceilNums.add(parseInt(m[1],10));
   });
   const attrs=['Height','Width','Open'];
   Array.from(doorNums).sort((a,b)=>a-b).forEach(n=>attrs.forEach(a=>push(`door${n}${a}`)));
@@ -104,16 +186,17 @@ function buildColumnsFromDoc(d, columns){
   const attrsSimple=['Height','Width','Remark'];
   Array.from(glassNums).sort((a,b)=>a-b).forEach(n=>attrsSimple.forEach(a=>push(`glass${n}${a}`)));
   Array.from(lsNums).sort((a,b)=>a-b).forEach(n=>attrsSimple.forEach(a=>push(`lightSteel${n}${a}`)));
+  Array.from(ceilNums).sort((a,b)=>a-b).forEach(n=>attrsSimple.forEach(a=>push(`ceiling${n}${a}`)));
   // 固定后缀
   ['surveyPhotos','status','createdAt','updatedAt','remark'].forEach(push);
-  // 其余字段
-  Object.keys(d||{}).sort().forEach(push);
+  // 不再附加未知字段，避免英文列头
   return cols;
 }
 
 exports.main = async (event = {}) => {
   // 跳过管理员角色校验
   const { id, _id, columns = [] } = event
+  const embedImages = !!event.embedImages
   const docId = id || _id
   if (!docId) return { code: 400, msg: '缺少 id' }
 
@@ -123,24 +206,20 @@ exports.main = async (event = {}) => {
     if (!d) return { code: 404, msg: '记录不存在' }
 
     const __cols = buildColumnsFromDoc(d, columns)
-    let rows = []
-    if (Array.isArray(__cols) && __cols.length) {
-      rows = __cols.map(c => {
-        const key = c.key || c
-        const title = c.title || key
-        return [title, cellValue(d[key], key)]
-      })
-    } else {
-      rows = Object.keys(d)
-        .filter(k => !['_openid', 'createdBy'].includes(k))
-        .map(k => [k, cellValue(d[k], k)])
+    const rows = []
+    for (const c of __cols) {
+      const key = c.key || c
+      const title = c.title || key
+      const val = d[key]
+      if (!isFilled(val)) continue
+      rows.push([title, cellValue(val, key)])
     }
-
+    // 追加价格
+    rows.push(['价格(元)', computePrice(d)])
     const XLSX = require('xlsx')
-    const ws = XLSX.utils.aoa_to_sheet([['字段', '值'], ...rows])
+    const ws = XLSX.utils.aoa_to_sheet([["字段","值"], ...rows])
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'survey')
-    // 更稳妥：先生成 base64，再转为 Buffer，兼容云函数环境
     const base64 = XLSX.write(wb, { bookType: 'xlsx', type: 'base64' })
     const buffer = Buffer.from(base64, 'base64')
 

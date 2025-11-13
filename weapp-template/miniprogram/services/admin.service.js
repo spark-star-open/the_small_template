@@ -35,16 +35,18 @@ function stats(projectId) { return call('statistics', { projectId }) }
 function detail(id) { return call('getRecords', { recordId: id }) }
 
 // Surveys
-function listSurveys({ page = 1, pageSize = 10, keyword = '' } = {}) {
-  return call('getSurveys', { page, pageSize, keyword }).then(d => ({ rows: d.rows || [], hasMore: !!d.hasMore }))
+function listSurveys({ page = 1, pageSize = 10, keyword = '', dateRange = '' } = {}) {
+  return call('getSurveys', { page, pageSize, keyword, dateRange }).then(d => ({ rows: d.rows || [], hasMore: !!d.hasMore }))
 }
 function getSurvey(id) { return call('getSurvey', { id }) }
 function submitSurvey(formData) { return call('submitSurvey', { formData }) }
 function updateSurvey(id, patch) { return call('updateSurvey', { id, patch }) }
 function deleteSurvey(id) { return call('deleteSurvey', { id }) }
 // renamed cloud functions to avoid singular/plural confusion
-function exportExcel(id, columns) { return call('exportExcel', { id, columns }) }
-function exportExcelBatch(ids = [], columns) { return call('exportExcelBatch', { ids, columns }) }
+function exportExcel(id, columns, options = {}) { return call('exportExcel', { id, columns, ...options }) }
+function exportExcelBatch(ids = [], columns, options = {}) { return call('exportExcelBatch', { ids, columns, ...options }) }
+
+// Async batch export via job queue
 
 module.exports = {
   call,

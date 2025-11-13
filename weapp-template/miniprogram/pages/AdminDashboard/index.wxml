@@ -1,7 +1,7 @@
 <view class="wrap">
   <view class="filters">
-    <picker mode="date" value="{{filters.date}}" bindchange="onDate">
-      <view class="picker">日期：{{filters.date || '全部'}}</view>
+    <picker mode="selector" range="{{dateRangeOptions}}" value="{{dateRangeIndex}}" bindchange="onDateRange">
+      <view class="picker">日期：{{dateRangeOptions[dateRangeIndex]}}</view>
     </picker>
     <input class="search" value="{{filters.keyword}}" bindinput="onKeyword" placeholder="门店/项目编号" />
   </view>
@@ -14,7 +14,10 @@
             <view wx:if="{{selectMode}}" class="radio {{ selectedMap[item._id] ? 'on' : '' }}" data-id="{{item._id}}" catchtap="toggleSelect"></view>
             <text class="title">{{item.shopName}}</text>
           </view>
-          <text class="badge {{item.status}}">{{item.statusText}}</text>
+          <view class="row-right">
+            <button class="img-btn" catchtap="onImageMenu" data-id="{{item._id}}">图片</button>
+            <text class="badge {{item.status}}">{{item.statusText}}</text>
+          </view>
         </view>
         <view class="sub">{{item.projectCode}} · {{item.timeText}}</view>
       </view>
